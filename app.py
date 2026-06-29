@@ -7,6 +7,7 @@ from tkinter import ttk, messagebox
 import pandas as pd
 import traceback
 import re
+from network import DatabaseManager
 
 DB_FILE = "inventory.db"
 
@@ -26,7 +27,7 @@ CATEGORIES = [
 class DatabaseHelper:
     @staticmethod
     def init_db():
-        conn = sqlite3.connect(DB_FILE)
+        conn = DatabaseManager.get_connection()
         c = conn.cursor()
 
         # Create base tables
@@ -121,7 +122,7 @@ class DatabaseHelper:
 
     @staticmethod
     def get_connection():
-        return sqlite3.connect(DB_FILE)
+        return DatabaseManager.get_connection()
 
 
 
@@ -146,7 +147,7 @@ class CategoryUIBuilder:
         for widget in parent_frame.winfo_children():
             widget.destroy()
 
-        inputs = {}
+        inputs: dict = {}
 
         # Helper to add simple text entry
         def add_entry(row, col, label_text, key, placeholder=None):
@@ -523,7 +524,7 @@ class CategoryEditorDialog(ctk.CTkToplevel):
         super().__init__(master)
         self.title(title)
         self.geometry("400x500")
-        self.result = (None, None)
+        self.result: tuple = (None, None)
         self.grab_set()
 
         self.name_label = ctk.CTkLabel(self, text="Nome da Categoria:")
@@ -660,6 +661,7 @@ class CategoryManagerWindow(ctk.CTkToplevel):
             import sqlite3
             from tkinter import messagebox
 
+            conn = None
             try:
                 conn = DatabaseHelper.get_connection()
                 c = conn.cursor()
@@ -673,7 +675,8 @@ class CategoryManagerWindow(ctk.CTkToplevel):
             except sqlite3.IntegrityError:
                 messagebox.showerror("Erro", "Esta categoria já existe.")
             finally:
-                conn.close()
+                if conn:
+                    conn.close()
 
     def edit_category(self):
         old_name = self.selected_category.get()
@@ -1525,6 +1528,11 @@ class SearchFrame(ctk.CTkFrame):
             self.search_container, text="Pesquisar", command=self.perform_search
         )
         self.search_btn.grid(row=0, column=2, padx=20, pady=15, sticky="w")
+        
+        self.refresh_btn = ctk.CTkButton(
+            self.search_container, text="Atualizar Tela", command=self.perform_search, fg_color="green", hover_color="darkgreen"
+        )
+        self.refresh_btn.grid(row=0, column=3, padx=20, pady=15, sticky="w")
 
         # Dynamic Filters Area (Using same UI Builder for EXACT match)
         self.filters_frame = ctk.CTkFrame(self.search_container, fg_color="transparent")
@@ -1577,7 +1585,7 @@ class SearchFrame(ctk.CTkFrame):
         self.scrollbar = ttk.Scrollbar(
             self.tree_frame, orient="vertical", command=self.tree.yview
         )
-        self.tree.configure(yscroll=self.scrollbar.set)
+        self.tree.configure(yscrollcommand=self.scrollbar.set)
         self.scrollbar.pack(side="right", fill="y", pady=5)
         
         self.btn_adjust = ctk.CTkButton(self, text="Ajustar Estoque Selecionado", command=self.quick_adjust_stock)
@@ -1598,6 +1606,8 @@ class SearchFrame(ctk.CTkFrame):
             
         comp_id = tags[0]
         values = self.tree.item(item, "values")
+        if not values or len(values) < 7:
+            return
         comp_name = values[0]
         current_qty = int(values[6])
         
@@ -1698,14 +1708,15 @@ class SearchFrame(ctk.CTkFrame):
                 params.append(f"%{comp_type}%")
 
         try:
-            df = pd.read_sql_query(sql, conn, params=params)
+            df = DatabaseManager.read_sql(sql, params)
         except Exception as e:
             messagebox.showerror(
                 "Erro de Pesquisa", f"Erro no banco de dados:\n{str(e)}"
             )
             return
         finally:
-            conn.close()
+            if hasattr(conn, 'close'):
+                conn.close()
 
         for item in self.tree.get_children():
             self.tree.delete(item)
@@ -2034,7 +2045,13 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         textbox.pack(expand=True, fill="both", padx=20, pady=(0, 20))
         
         changelog = """
-## v1.0.9
+v1.1.0:
+- Novo sistema de Sincronização em Rede Local (LAN).
+- Agora o sistema pode atuar como Servidor ou Cliente para trabalhar com múltiplos computadores.
+- Adicionado botão 'Atualizar Tela' na aba de pesquisas.
+- Refatoração na arquitetura do banco de dados (DatabaseManager).
+
+v1.0.9:
 * Calculadora de Resistores PTH atualizada com modo bidirecional (Valor para Cores).
 
 ## v1.0.8
@@ -2066,11 +2083,71 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         btn_close.pack(pady=(0, 20))
 
 
+class NetworkConfigModal(ctk.CTkToplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.title("Configurações de Rede / Sincronização")
+        self.geometry("500x350")
+        self.grab_set()
+        
+        self.mode_var = ctk.StringVar(value=DatabaseManager.MODE)
+        
+        ctk.CTkLabel(self, text="Modo de Operação:", font=ctk.CTkFont(size=16, weight="bold")).pack(pady=(20, 10))
+        
+        self.mode_menu = ctk.CTkSegmentedButton(self, values=["Local", "Host", "Client"], variable=self.mode_var, command=self.on_mode_change)
+        self.mode_menu.pack(pady=10)
+        
+        self.info_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.info_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        self.host_ip_label = ctk.CTkLabel(self.info_frame, text="", font=ctk.CTkFont(size=14))
+        
+        self.client_ip_label = ctk.CTkLabel(self.info_frame, text="IP do Servidor Host:")
+        self.client_ip_entry = ctk.CTkEntry(self.info_frame, width=200, placeholder_text="ex: 192.168.1.100")
+        self.client_ip_entry.insert(0, DatabaseManager.HOST_IP if DatabaseManager.HOST_IP != "127.0.0.1" else "")
+        
+        self.save_btn = ctk.CTkButton(self, text="Aplicar e Salvar", command=self.save_config)
+        self.save_btn.pack(pady=(0, 20))
+        
+        self.on_mode_change(self.mode_var.get())
+        
+    def on_mode_change(self, mode):
+        self.host_ip_label.pack_forget()
+        self.client_ip_label.pack_forget()
+        self.client_ip_entry.pack_forget()
+        
+        if mode == "Host":
+            local_ip = DatabaseManager.get_local_ip()
+            self.host_ip_label.configure(text=f"Atuando como Servidor Host.\nCompartilhe este IP: {local_ip}:{DatabaseManager.PORT}")
+            self.host_ip_label.pack(pady=20)
+        elif mode == "Client":
+            self.client_ip_label.pack(pady=(10, 5))
+            self.client_ip_entry.pack(pady=5)
+            
+    def save_config(self):
+        mode = self.mode_var.get()
+        if mode == "Client":
+            ip = self.client_ip_entry.get().strip()
+            if not ip:
+                messagebox.showwarning("Aviso", "Por favor, insira o IP do servidor.")
+                return
+            DatabaseManager.HOST_IP = ip
+            
+        DatabaseManager.MODE = mode
+        
+        if mode == "Host":
+            DatabaseManager.start_server()
+        else:
+            DatabaseManager.stop_server()
+            
+        messagebox.showinfo("Sucesso", f"Modo de operação alterado para: {mode}")
+        self.destroy()
+
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         # Configure window
-        self.title("Inventário de Componentes v1.0.9")
+        self.title("Inventário de Componentes v1.1.0")
         self.geometry("1400x800")
 
         ctk.set_appearance_mode("dark")
@@ -2083,7 +2160,7 @@ class App(ctk.CTk):
 
         self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_rowconfigure(4, weight=1)
+        self.sidebar.grid_rowconfigure(8, weight=1)
 
         self.logo_label = ctk.CTkLabel(
             self.sidebar, text="Inventário", font=ctk.CTkFont(size=24, weight="bold")
@@ -2121,6 +2198,15 @@ class App(ctk.CTk):
         )
         self.btn_calculators.grid(row=5, column=0, padx=20, pady=10)
         
+        self.btn_network = ctk.CTkButton(
+            self.sidebar,
+            text="Rede / Sincronização",
+            command=self.show_network_config,
+            fg_color="#006400",
+            hover_color="#008000"
+        )
+        self.btn_network.grid(row=6, column=0, padx=20, pady=10)
+        
         self.btn_changelog = ctk.CTkButton(
             self.sidebar,
             text="Novidades da Versão",
@@ -2128,7 +2214,7 @@ class App(ctk.CTk):
             fg_color="#006400",
             hover_color="#008000"
         )
-        self.btn_changelog.grid(row=6, column=0, padx=20, pady=(10, 30), sticky="s")
+        self.btn_changelog.grid(row=7, column=0, padx=20, pady=(10, 30), sticky="s")
 
         self.drawer_frame = DrawerRegistrationFrame(self)
         self.comp_frame = ComponentRegistrationFrame(self)
@@ -2140,10 +2226,8 @@ class App(ctk.CTk):
         self.check_changelog()
 
     def check_changelog(self):
-        import json
-        import os
         settings_path = "settings.json"
-        current_version = "1.0.9"
+        current_version = "1.1.0"
         last_seen = "1.0.0"
         
         if os.path.exists(settings_path):
@@ -2164,6 +2248,9 @@ class App(ctk.CTk):
 
     def show_changelog(self):
         ReleaseNotesModal(self)
+
+    def show_network_config(self):
+        NetworkConfigModal(self)
 
     def show_category_manager(self):
         CategoryManagerWindow(self, self.on_categories_updated)

@@ -12,7 +12,7 @@ Uma aplicação desktop poderosa e intuitiva desenvolvida para organizar, gerenc
 
 ## Como Baixar e Usar
 
-1. Acesse a aba **[Releases](../../releases)** localizada no lado direito desta página do GitHub.
+1. Acesse a aba **[Releases](https://github.com/Adrenalite71/component-inventory-app/releases)** localizada no lado direito desta página do GitHub.
 2. Baixe o arquivo `.exe` da versão mais recente.
 3. Este aplicativo é um executável **standalone (portátil)**. Não é necessária nenhuma instalação complexa — basta dar um duplo clique no arquivo baixado e começar a gerenciar seu inventário!
 

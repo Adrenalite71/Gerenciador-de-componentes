@@ -1,6 +1,6 @@
 # Inventário de Componentes Eletrônicos
 
-Uma aplicação desktop poderosa e intuitiva desenvolvida para organizar, gerenciar e pesquisar componentes eletrônicos (como Resistores PTH/SMD, Capacitores, Transistores, Circuitos Integrados e mais). O sistema permite o mapeamento físico preciso em gavetas e cálculo dinâmico de parâmetros.
+Uma aplicação desktop intuitiva desenvolvida para organizar, gerenciar e pesquisar componentes eletrônicos (como Resistores PTH/SMD, Capacitores, Transistores, Circuitos Integrados e mais). O sistema permite o mapeamento físico preciso em gavetas e cálculo dinâmico de parâmetros.
 
 ## Funcionalidades
 

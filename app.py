@@ -1727,7 +1727,7 @@ class SearchFrame(ctk.CTkFrame):
 
         if df is not None and not df.empty:
             try:
-                df.fillna("-", inplace=True)
+                df = df.astype(object).fillna("-")
 
                 def format_location(row):
                     try:

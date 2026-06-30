@@ -1,0 +1,28 @@
+###### configuring your python environment
+
+# O aplicativo é para Windows
+python-platform = "win32"
+
+# Confirme sua versão real no terminal (ex: 3.11, 3.12, ou mantenha 3.13 se for o caso)
+python-version = "3.14.6" 
+
+# is Pyrefly disallowed from querying for an interpreter to automatically determine your
+# `python-platform`, `python-version`, and extra entries to `site-package-path`?
+skip-interpreter-query = false
+
+# Substitua pelo caminho real se usar ambiente virtual (fortemente recomendado)
+# python-interpreter-path = ".venv/Scripts/python.exe" 
+
+#### configuring your type check settings
+
+# wildcards for which Pyrefly will unconditionally replace the import with `typing.Any`
+replace-imports-with-any = []
+
+# Adicionamos o ctk para evitar falsos positivos se a tipagem da biblioteca falhar
+ignore-missing-imports = ["customtkinter.*"]
+
+# should Pyrefly skip type checking if we find a generated file?
+ignore-errors-in-generated-code = false
+
+# should Pyrefly check the bodies of unannotated function definitions?
+check-unannotated-defs = true

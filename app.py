@@ -1205,21 +1205,34 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     set_val(field_name, c_type)
 
     def auto_fill_diode(self, event=None):
-        if self.cat_var.get() == "Diodo":
+        cat = self.cat_var.get()
+        if cat in ["Diodo", "Ponte Retificadora"]:
             from component_knowledge import get_semiconductor_specs
             name = self.name_entry.get().strip()
             specs = get_semiconductor_specs(name)
             if specs:
-                if 'Tipo' in specs:
-                    self.diode_tipo_cb.set(specs['Tipo'])
-                if 'Encapsulamento' in specs:
-                    self.diode_encaps_cb.set(specs['Encapsulamento'])
-                if 'Tensão Máx (V)' in specs:
-                    self.diode_tensao_entry.delete(0, "end")
-                    self.diode_tensao_entry.insert(0, specs['Tensão Máx (V)'])
-                if 'Corrente Máx (A)' in specs:
-                    self.diode_corrente_entry.delete(0, "end")
-                    self.diode_corrente_entry.insert(0, specs['Corrente Máx (A)'])
+                if cat == "Diodo":
+                    if 'Tipo' in specs:
+                        self.diode_tipo_cb.set(specs['Tipo'])
+                    if 'Encapsulamento' in specs:
+                        self.diode_encaps_cb.set(specs['Encapsulamento'])
+                    if 'Tensão Máx (V)' in specs:
+                        self.diode_tensao_entry.delete(0, "end")
+                        self.diode_tensao_entry.insert(0, specs['Tensão Máx (V)'])
+                    if 'Corrente Máx (A)' in specs:
+                        self.diode_corrente_entry.delete(0, "end")
+                        self.diode_corrente_entry.insert(0, specs['Corrente Máx (A)'])
+                elif cat == "Ponte Retificadora":
+                    if 'Fases' in specs:
+                        self.bridge_fases_cb.set(specs['Fases'])
+                    if 'Encapsulamento' in specs:
+                        self.bridge_encaps_cb.set(specs['Encapsulamento'])
+                    if 'Tensão Máx (V)' in specs:
+                        self.bridge_tensao_entry.delete(0, "end")
+                        self.bridge_tensao_entry.insert(0, specs['Tensão Máx (V)'])
+                    if 'Corrente Máx (A)' in specs:
+                        self.bridge_corrente_entry.delete(0, "end")
+                        self.bridge_corrente_entry.insert(0, specs['Corrente Máx (A)'])
 
     def draw_diode_fields(self):
         for widget in self.dynamic_frame.winfo_children():
@@ -1228,7 +1241,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         
         ctk.CTkLabel(self.dynamic_frame, text="Tipo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        self.diode_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Retificador', 'Schottky', 'Zener', 'Sinal', 'Ponte Retificadora', 'Outro'])
+        self.diode_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Retificador', 'Schottky', 'Zener', 'Sinal'])
         self.diode_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
         self.diode_tipo_cb.set('Retificador')
 
@@ -1245,12 +1258,38 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.diode_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
         self.diode_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
+    def draw_bridge_fields(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
+        
+        self.dynamic_inputs = {}
+        
+        ctk.CTkLabel(self.dynamic_frame, text="Fases:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.bridge_fases_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Monofásica', 'Trifásica'])
+        self.bridge_fases_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.bridge_fases_cb.set('Monofásica')
+
+        ctk.CTkLabel(self.dynamic_frame, text="Encapsulamento:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+        self.bridge_encaps_cb = ctk.CTkComboBox(self.dynamic_frame, values=['KBP (PTH)', 'GBJ (PTH)', 'KBPC (Metal Quadrado)', 'WOG (Redondo)', 'MBS (SMD)', 'ABS (SMD)'])
+        self.bridge_encaps_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        self.bridge_encaps_cb.set('KBP (PTH)')
+
+        ctk.CTkLabel(self.dynamic_frame, text="Tensão Máx (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.bridge_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.bridge_tensao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (A):").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.bridge_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.bridge_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+
     def on_category_change(self, category):
         for widget in self.dynamic_frame.winfo_children():
             widget.destroy()
 
         if category == "Diodo":
             self.draw_diode_fields()
+        elif category == "Ponte Retificadora":
+            self.draw_bridge_fields()
         else:
             cat_config = getattr(self, "cat_logic_map", {}).get(
                 category, {"logic_type": "Outros", "fields": "[]"}
@@ -1292,6 +1331,19 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 "Corrente Máx (A)": self.diode_corrente_entry.get().strip()
             }
             logic_type = "Diodo"
+            normalized_val = None
+        elif category == "Ponte Retificadora":
+            raw_val = ""
+            voltage = ""
+            tolerance = ""
+            comp_type = ""
+            properties = {
+                "Fases": self.bridge_fases_cb.get(),
+                "Encapsulamento": self.bridge_encaps_cb.get(),
+                "Tensão Máx (V)": self.bridge_tensao_entry.get().strip(),
+                "Corrente Máx (A)": self.bridge_corrente_entry.get().strip()
+            }
+            logic_type = "Ponte Retificadora"
             normalized_val = None
         else:
             cat_config = getattr(self, "cat_logic_map", {}).get(

@@ -1,20 +1,22 @@
 import re
 
-def get_led_specs(component_name: str):
+def get_led_specs(color: str):
     """
-    Analyzes a component name to determine typical LED specifications based on color.
-    Returns a dict with 'voltage' and 'current' or None if no color is detected.
+    Analyzes a color string to determine typical LED specifications.
+    Returns a dict with 'voltage' and 'current' or None if no match is found.
     """
-    name_lower = component_name.lower()
+    if not color:
+        return None
+
+    c_lower = color.lower().strip()
     
-    # Check for colors in the name
-    if re.search(r'\b(vermelho|amarelo|laranja|red|yellow|orange)\b', name_lower):
+    if c_lower in ['vermelho', 'amarelo', 'laranja']:
         return {"voltage": "2.0V", "current": "20mA"}
     
-    elif re.search(r'\b(verde|green)\b', name_lower):
+    elif c_lower == 'verde':
         return {"voltage": "2.2V", "current": "20mA"}
     
-    elif re.search(r'\b(azul|branco|ultravioleta|uv|blue|white)\b', name_lower):
+    elif c_lower in ['azul', 'branco', 'ultravioleta', 'uv']:
         return {"voltage": "3.2V", "current": "20mA"}
         
     return None

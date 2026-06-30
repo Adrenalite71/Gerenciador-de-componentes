@@ -1257,25 +1257,41 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             if volt and not voltage:
                 voltage = volt
 
-        if category in ["Optoeletrônica", "LED", "Optoacoplador"] or "led" in name.lower():
+        if category == "LED":
             from component_knowledge import get_led_specs
-            specs = get_led_specs(name)
+            
+            # Find the color property
+            color_val = ""
+            for k, v in properties.items():
+                if k.lower() in ["cor", "color"]:
+                    color_val = v
+                    break
+                    
+            specs = get_led_specs(color_val)
             if specs:
-                if not voltage:
-                    voltage = specs["voltage"]
-                
-                current_key = None
+                # Inject voltage if empty
+                tensao_key = None
                 for k in properties.keys():
-                    if 'corrente' in k.lower() or 'current' in k.lower():
-                        current_key = k
+                    if k.lower() in ["tensão", "tensao", "voltage"]:
+                        tensao_key = k
                         break
-                
-                if current_key:
-                    if not properties[current_key]:
-                        properties[current_key] = specs["current"]
+                if tensao_key:
+                    if not properties[tensao_key]:
+                        properties[tensao_key] = specs["voltage"]
+                else:
+                    properties["Tensão"] = specs["voltage"]
+                    
+                # Inject current if empty
+                corrente_key = None
+                for k in properties.keys():
+                    if k.lower() in ["corrente", "current"]:
+                        corrente_key = k
+                        break
+                if corrente_key:
+                    if not properties[corrente_key]:
+                        properties[corrente_key] = specs["current"]
                 else:
                     properties["Corrente"] = specs["current"]
-
         try:
             if old_comp_id:
                 LocalDatabaseManager.execute_query("DELETE FROM components WHERE id = ?", (old_comp_id,))

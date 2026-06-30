@@ -32,7 +32,9 @@ def get_semiconductor_specs(part_number: str):
         'm7': {'Tipo': 'Retificador', 'Tensão Máx (V)': '1000', 'Corrente Máx (A)': '1', 'Encapsulamento': 'SMA (SMD)'},
         '1n4148': {'Tipo': 'Sinal', 'Tensão Máx (V)': '100', 'Corrente Máx (A)': '0.3', 'Encapsulamento': 'DO-35 (PTH)'},
         'ss34': {'Tipo': 'Schottky', 'Tensão Máx (V)': '40', 'Corrente Máx (A)': '3', 'Encapsulamento': 'SMC (SMD)'},
-        'mb10s': {'Tipo': 'Ponte Retificadora', 'Tensão Máx (V)': '1000', 'Corrente Máx (A)': '1', 'Encapsulamento': 'MBS (SMD)'}
+        'mb10s': {'Fases': 'Monofásica', 'Tensão Máx (V)': '1000', 'Corrente Máx (A)': '1', 'Encapsulamento': 'MBS (SMD)'},
+        'kbpc3510': {'Fases': 'Monofásica', 'Tensão Máx (V)': '1000', 'Corrente Máx (A)': '35', 'Encapsulamento': 'KBPC (Metal Quadrado)'},
+        'kbp206': {'Fases': 'Monofásica', 'Tensão Máx (V)': '600', 'Corrente Máx (A)': '2', 'Encapsulamento': 'KBP (PTH)'}
     }
     
     for key, spec in specs.items():

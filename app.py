@@ -917,6 +917,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
 
         self.cat_logic_map = {}
         self.cat_var = ctk.StringVar(value="")
+        self._current_ui_category = None
         self.cat_menu = ctk.CTkOptionMenu(
             self.container,
             variable=self.cat_var,
@@ -1396,6 +1397,9 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.relay_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
     def on_category_change(self, category):
+        if hasattr(self, '_current_ui_category') and self._current_ui_category == category:
+            return
+            
         for widget in self.dynamic_frame.winfo_children():
             widget.destroy()
 
@@ -1412,6 +1416,8 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             self.dynamic_inputs = CategoryUIBuilder.build_fields(
                 self.dynamic_frame, cat_config, is_search=False
             )
+            
+        self._current_ui_category = category
 
     def save_component(self):
         name = self.name_entry.get().strip()

@@ -20,8 +20,7 @@ CATEGORIES = [
     "Transistor",
     "Indutor",
     "CI (Circuito Integrado)",
-    "Optoacoplador",
-    "Outros",
+    "Optoacoplador"
 ]
 
 
@@ -351,7 +350,7 @@ class CategoryUIBuilder:
             add_entry(0, 0, "Tensão Isolação (ex: 5kV):", "voltage")
             add_entry(0, 1, "Tipo Saída (Fototransistor):", "component_type")
 
-        else:  # Outros
+        else:  # Custom Categories
             if custom_fields:
                 try:
                     for i, field in enumerate(custom_fields):
@@ -359,9 +358,6 @@ class CategoryUIBuilder:
                         add_entry(i // 3, i % 3, field_name + ":", field_name)
                 except Exception as e:
                     print(f"Error drawing fields: {e}")
-            else:
-                add_entry(0, 0, "Descrição / Valor:", "raw_value")
-                add_entry(0, 1, "Tipo / Encapsulamento:", "component_type")
 
         return inputs
 
@@ -1060,6 +1056,20 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     self.mod_ci_entry.delete(0, "end")
                     self.mod_tensao_entry.delete(0, "end")
                     self.mod_funcao_entry.delete(0, "end")
+            elif cat == "CI (Circuito Integrado)":
+                if hasattr(self, "ci_tensao_entry"):
+                    self.ci_familia_cb.set('Analógico')
+                    self.update_ci_funcao('Analógico')
+                    self.ci_funcao_cb.set('')
+                    self.ci_tensao_entry.delete(0, "end")
+                    self.ci_pinos_entry.delete(0, "end")
+                    self.ci_encaps_entry.delete(0, "end")
+            elif cat == "Optoacoplador":
+                if hasattr(self, "opto_isolacao_entry"):
+                    self.opto_tipo_cb.set('Fototransistor')
+                    self.opto_canais_cb.set('1 (Simples)')
+                    self.opto_isolacao_entry.delete(0, "end")
+                    self.opto_encaps_entry.delete(0, "end")
                     
             return
             
@@ -1265,6 +1275,27 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 self.mod_tensao_entry.insert(0, str(properties.get('Tensão de Alim. (V)', '')))
                 self.mod_funcao_entry.delete(0, "end")
                 self.mod_funcao_entry.insert(0, str(properties.get('Função/Aplicação', '')))
+            elif comp[2] == "CI (Circuito Integrado)":
+                if 'Família' in properties: 
+                    self.ci_familia_cb.set(properties['Família'])
+                    self.update_ci_funcao(properties['Família'])
+                if 'Função' in properties: 
+                    self.ci_funcao_cb.set(properties['Função'])
+                self.ci_tensao_entry.delete(0, "end")
+                self.ci_tensao_entry.insert(0, str(properties.get('Tensão de Oper. (V)', '')))
+                self.ci_pinos_entry.delete(0, "end")
+                self.ci_pinos_entry.insert(0, str(properties.get('Número de Pinos', '')))
+                self.ci_encaps_entry.delete(0, "end")
+                self.ci_encaps_entry.insert(0, str(properties.get('Encapsulamento', '')))
+            elif comp[2] == "Optoacoplador":
+                if 'Tipo de Saída' in properties: 
+                    self.opto_tipo_cb.set(properties['Tipo de Saída'])
+                if 'Canais' in properties: 
+                    self.opto_canais_cb.set(properties['Canais'])
+                self.opto_isolacao_entry.delete(0, "end")
+                self.opto_isolacao_entry.insert(0, str(properties.get('Isolação (kVrms)', '')))
+                self.opto_encaps_entry.delete(0, "end")
+                self.opto_encaps_entry.insert(0, str(properties.get('Encapsulamento', '')))
             else:
                 set_val("raw_value", c_raw)
                 set_val("voltage", c_volt)
@@ -1484,15 +1515,61 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             from component_knowledge import get_custom_specs
             specs = get_custom_specs(name)
             if specs:
-                if 'Função/Modelo' in specs and "raw_value" in self.dynamic_inputs:
-                    self.dynamic_inputs["raw_value"].delete(0, "end")
-                    self.dynamic_inputs["raw_value"].insert(0, specs['Função/Modelo'])
-                if 'Número de Pinos' in specs and "tolerance" in self.dynamic_inputs:
-                    self.dynamic_inputs["tolerance"].delete(0, "end")
-                    self.dynamic_inputs["tolerance"].insert(0, specs['Número de Pinos'])
-                if 'Encapsulamento' in specs and "component_type" in self.dynamic_inputs:
-                    self.dynamic_inputs["component_type"].delete(0, "end")
-                    self.dynamic_inputs["component_type"].insert(0, specs['Encapsulamento'])
+                if hasattr(self, 'ci_familia_cb') and 'Família' in specs:
+                    self.ci_familia_cb.set(specs.get("Família", ""))
+                    self.update_ci_funcao(specs.get("Família", ""))
+                if hasattr(self, 'ci_funcao_cb') and 'Função' in specs:
+                    self.ci_funcao_cb.set(specs.get("Função", ""))
+                if hasattr(self, 'ci_tensao_entry') and 'Tensão de Oper. (V)' in specs:
+                    self.ci_tensao_entry.delete(0, 'end')
+                    self.ci_tensao_entry.insert(0, specs.get("Tensão de Oper. (V)", ""))
+                if hasattr(self, 'ci_pinos_entry') and 'Número de Pinos' in specs:
+                    self.ci_pinos_entry.delete(0, 'end')
+                    self.ci_pinos_entry.insert(0, specs.get("Número de Pinos", ""))
+                if hasattr(self, 'ci_encaps_entry') and 'Encapsulamento' in specs:
+                    self.ci_encaps_entry.delete(0, 'end')
+                    self.ci_encaps_entry.insert(0, specs.get("Encapsulamento", ""))
+        elif cat == "Optoacoplador":
+            from component_knowledge import get_custom_specs
+            specs = get_custom_specs(name)
+            if specs:
+                if hasattr(self, 'opto_tipo_cb') and 'Tipo de Saída' in specs:
+                    self.opto_tipo_cb.set(specs.get("Tipo de Saída", "Fototransistor"))
+                if hasattr(self, 'opto_canais_cb') and 'Canais' in specs:
+                    self.opto_canais_cb.set(specs.get("Canais", "1 (Simples)"))
+                if hasattr(self, 'opto_isolacao_entry') and 'Isolação (kVrms)' in specs:
+                    self.opto_isolacao_entry.delete(0, 'end')
+                    self.opto_isolacao_entry.insert(0, specs.get("Isolação (kVrms)", ""))
+                if hasattr(self, 'opto_encaps_entry') and 'Encapsulamento' in specs:
+                    self.opto_encaps_entry.delete(0, 'end')
+                    self.opto_encaps_entry.insert(0, specs.get("Encapsulamento", ""))
+
+    def draw_optoacoplador_fields(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
+
+        self.dynamic_inputs = {}
+        import customtkinter as ctk
+
+        # Row 0
+        ctk.CTkLabel(self.dynamic_frame, text="Tipo de Saída:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.opto_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Fototransistor', 'Fotodarlington', 'Fototriac (Zero-Cross)', 'Fototriac (Random)', 'Saída Lógica/Rápida', 'Outro'])
+        self.opto_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.opto_tipo_cb.set('Fototransistor')
+
+        ctk.CTkLabel(self.dynamic_frame, text="Canais:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+        self.opto_canais_cb = ctk.CTkComboBox(self.dynamic_frame, values=['1 (Simples)', '2 (Duplo)', '4 (Quádruplo)', 'Outro'])
+        self.opto_canais_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        self.opto_canais_cb.set('1 (Simples)')
+
+        # Row 1
+        ctk.CTkLabel(self.dynamic_frame, text="Isolação (kVrms):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.opto_isolacao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.opto_isolacao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Encapsulamento:").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.opto_encaps_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.opto_encaps_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
     def draw_diode_fields(self):
         for widget in self.dynamic_frame.winfo_children():
@@ -1653,6 +1730,61 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.mod_funcao_entry = ctk.CTkEntry(self.dynamic_frame)
         self.mod_funcao_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
+    def update_ci_funcao(self, selected_familia):
+        if selected_familia == 'Analógico':
+            options = ['Amp-Op', 'Timer', 'Regulador de Tensão', 'Comparador', 'Referência de Tensão', 'Outro']
+        elif selected_familia == 'Digital':
+            options = ['Porta Lógica', 'Flip-Flop', 'Shift Register', 'Contador', 'Outro']
+        elif selected_familia == 'Microcontrolador':
+            options = ['MCU 8-bit', 'MCU 16-bit', 'MCU 32-bit', 'DSP', 'Outro']
+        elif selected_familia == 'Driver/Potência':
+            options = ['Gate Driver', 'Ponte H / Motor', 'Display Driver', 'Outro']
+        elif selected_familia == 'Comunicação':
+            options = ['Transceptor (RS-485/CAN/etc)', 'Expansor de I/O', 'Isolador Digital', 'Outro']
+        elif selected_familia == 'Memória':
+            options = ['EEPROM', 'Flash', 'SRAM', 'Outro']
+        else:
+            options = ['Específico/Outro']
+            
+        if hasattr(self, 'ci_funcao_cb'):
+            self.ci_funcao_cb.configure(values=options)
+            if self.ci_funcao_cb.get() not in options:
+                self.ci_funcao_cb.set(options[0])
+
+    def draw_ci_fields(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
+            
+        self.dynamic_inputs = {}
+        import customtkinter as ctk
+        
+        # Row 0
+        ctk.CTkLabel(self.dynamic_frame, text="Família:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.ci_familia_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Analógico', 'Digital', 'Microcontrolador', 'Driver/Potência', 'Comunicação', 'Memória', 'Outro'], command=self.update_ci_funcao)
+        self.ci_familia_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Função:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+        self.ci_funcao_cb = ctk.CTkComboBox(self.dynamic_frame, values=[])
+        self.ci_funcao_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+        # Row 1
+        ctk.CTkLabel(self.dynamic_frame, text="Tensão de Oper. (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.ci_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.ci_tensao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Número de Pinos:").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.ci_pinos_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.ci_pinos_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+
+        # Row 2
+        ctk.CTkLabel(self.dynamic_frame, text="Encapsulamento:").grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.ci_encaps_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.ci_encaps_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+        # Initialize dynamic cascade
+        self.ci_familia_cb.set('Analógico')
+        self.update_ci_funcao('Analógico')
+
     def on_category_change(self, category):
         if hasattr(self, '_current_ui_category') and self._current_ui_category == category:
             return
@@ -1670,6 +1802,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             self.draw_sensor_fields()
         elif category == "Módulo":
             self.draw_module_fields()
+        elif category == "CI (Circuito Integrado)":
+            self.draw_ci_fields()
+        elif category == "Optoacoplador":
+            self.draw_optoacoplador_fields()
         else:
             cat_config = getattr(self, "cat_logic_map", {}).get(
                 category, {"logic_type": "Outros", "fields": "[]"}
@@ -1790,6 +1926,33 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 "Função/Aplicação": self.mod_funcao_entry.get().strip()
             }
             logic_type = "Módulo"
+            normalized_val = None
+        elif category == "CI (Circuito Integrado)":
+            raw_val = ""
+            voltage = ""
+            tolerance = ""
+            comp_type = ""
+            properties = {
+                'Família': self.ci_familia_cb.get(),
+                'Função': self.ci_funcao_cb.get(),
+                'Tensão de Oper. (V)': self.ci_tensao_entry.get().strip(),
+                'Número de Pinos': self.ci_pinos_entry.get().strip(),
+                'Encapsulamento': self.ci_encaps_entry.get().strip()
+            }
+            logic_type = "CI (Circuito Integrado)"
+            normalized_val = None
+        elif category == "Optoacoplador":
+            raw_val = ""
+            voltage = ""
+            tolerance = ""
+            comp_type = ""
+            properties = {
+                'Tipo de Saída': self.opto_tipo_cb.get(),
+                'Canais': self.opto_canais_cb.get(),
+                'Isolação (kVrms)': self.opto_isolacao_entry.get().strip(),
+                'Encapsulamento': self.opto_encaps_entry.get().strip()
+            }
+            logic_type = "Optoacoplador"
             normalized_val = None
         elif category == "Relé":
             raw_val = ""

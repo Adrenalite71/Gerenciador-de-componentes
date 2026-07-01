@@ -1,0 +1,212 @@
+{
+  "Resistor PTH": {
+    "fields": {
+      "Método de Entrada": {
+        "type": "ComboBox",
+        "values": ["Código de Cores", "Entrada Direta"],
+        "logic": {
+          "if_value_eq_Entrada Direta": {
+            "fields": [
+              {"name": "Resistência (ex: 10k):", "type": "Entry"},
+              {"name": "Tolerância (ex: 5%):", "type": "Entry"},
+              {"name": "Potência / Tamanho:", "type": "Entry"}
+            ]
+          },
+          "if_value_eq_Código de Cores": {
+            "fields": [
+              {
+                "name": "Número de Faixas",
+                "type": "ComboBox",
+                "values": ["4", "5", "6"],
+                "logic_bands": {
+                  "digits_colors": ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Cinza", "Branco"],
+                  "multi_colors": ["Preto", "Marrom", "Vermelho", "Laranja", "Amarelo", "Verde", "Azul", "Violeta", "Cinza", "Branco", "Dourado", "Prateado"],
+                  "tol_colors": ["Marrom", "Vermelho", "Verde", "Azul", "Violeta", "Cinza", "Dourado", "Prateado"],
+                  "temp_colors": ["Marrom", "Vermelho", "Laranja", "Amarelo", "Azul", "Violeta", "Branco"]
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "Resistor SMD": {
+    "fields": [
+      {"name": "Código SMD:", "type": "Entry"},
+      {"name": "Tolerância (ex: 1%):", "type": "Entry"},
+      {"name": "Encapsulamento (ex: 0805):", "type": "Entry"}
+    ]
+  },
+  "Capacitor PTH": {
+    "fields": [
+      {"name": "Capacitância (ex: 100nF):", "type": "Entry"},
+      {"name": "Tensão Máx (ex: 50V):", "type": "Entry"},
+      {"name": "Encapsulamento/Tipo:", "type": "Entry"}
+    ]
+  },
+  "Capacitor SMD": {
+    "fields": [
+      {"name": "Código SMD:", "type": "Entry"},
+      {"name": "Tensão Máx (ex: 50V):", "type": "Entry"},
+      {"name": "Encapsulamento/Tipo:", "type": "Entry"}
+    ]
+  },
+  "Transistor": {
+    "fields": [
+      {
+        "name": "Tipo:",
+        "type": "ComboBox",
+        "values": ["BJT", "MOSFET", "Darlington", "IGBT"],
+        "logic": {
+          "if_value_in_['BJT', 'Darlington']": {
+            "Polaridade:": {"values": ["NPN", "PNP"]}
+          },
+          "elif_value_eq_MOSFET": {
+            "Polaridade:": {"values": ["Canal N", "Canal P"]}
+          },
+          "elif_value_eq_IGBT": {
+            "Polaridade:": {"values": ["-"], "state": "disabled"}
+          }
+        }
+      },
+      {
+        "name": "Polaridade:",
+        "type": "ComboBox"
+      },
+      {"name": "Encapsulamento:", "type": "Entry"},
+      {"name": "Tensão Máx (VCEO/VDS):", "type": "Entry"},
+      {"name": "Corrente Máx (IC/ID):", "type": "Entry"}
+    ]
+  },
+  "Indutor": {
+    "fields": [
+      {"name": "Indutância (ex: 10µH):", "type": "Entry"},
+      {"name": "Corrente Máx (ex: 2A):", "type": "Entry"},
+      {"name": "Encapsulamento:", "type": "Entry"}
+    ]
+  },
+  "Diodo": {
+    "fields": [
+      {"name": "Tipo:", "type": "ComboBox", "values": ["Retificador", "Schottky", "Zener", "Sinal"]},
+      {"name": "Encapsulamento:", "type": "ComboBox", "values": ["DO-41 (PTH)", "DO-201 (PTH)", "DO-35 (PTH)", "SMA (SMD)", "SMB (SMD)", "SMC (SMD)", "SOD-123 (SMD)", "KBP (PTH)", "MBS (SMD)", "Outro"]},
+      {"name": "Tensão Máx (V):", "type": "Entry"},
+      {"name": "Corrente Máx (A):", "type": "Entry"}
+    ]
+  },
+  "Ponte Retificadora": {
+    "fields": [
+      {"name": "Fases:", "type": "ComboBox", "values": ["Monofásica", "Trifásica"]},
+      {"name": "Encapsulamento:", "type": "ComboBox", "values": ["KBP (PTH)", "GBJ (PTH)", "KBPC (Metal Quadrado)", "WOG (Redondo)", "MBS (SMD)", "ABS (SMD)"]},
+      {"name": "Tensão Máx (V):", "type": "Entry"},
+      {"name": "Corrente Máx (A):", "type": "Entry"}
+    ]
+  },
+  "Relé": {
+    "fields": [
+      {"name": "Tipo:", "type": "ComboBox", "values": ["Eletromecânico", "Estado Sólido (SSR)", "Reed", "Módulo", "Outro"]},
+      {"name": "Tipo de Contato:", "type": "ComboBox", "values": ["SPDT (1 Reversível)", "DPDT (2 Reversíveis)", "SPST-NO (1 NA)", "SPST-NC (1 NF)", "Outro"]},
+      {"name": "Tensão da Bobina (V):", "type": "Entry"},
+      {"name": "Corrente Máx dos Contatos (A):", "type": "Entry"}
+    ]
+  },
+  "Sensor": {
+    "fields": [
+      {
+        "name": "Tipo:",
+        "type": "ComboBox",
+        "values": ["Temp/Umidade", "Distância/Ultrassom", "Presença/PIR", "Acelerômetro/Giro", "Tensão/Corrente", "Indutivo", "Capacitivo", "Fotoelétrico", "Outro"],
+        "logic": {
+          "if_value_in_['Indutivo', 'Capacitivo', 'Fotoelétrico']": {
+            "Sinal de Interface:": {"values": ["NPN", "PNP", "Outro"]}
+          },
+          "elif_value_eq_Temp/Umidade": {
+            "Sinal de Interface:": {"values": ["One-Wire", "I2C", "SPI", "Analógico", "Outro"]}
+          },
+          "elif_value_eq_Distância/Ultrassom": {
+            "Sinal de Interface:": {"values": ["Digital (Pulse)", "I2C", "UART", "Analógico", "Outro"]}
+          },
+          "elif_value_eq_Presença/PIR": {
+            "Sinal de Interface:": {"values": ["Digital (High/Low)", "Outro"]}
+          },
+          "elif_value_eq_Acelerômetro/Giro": {
+            "Sinal de Interface:": {"values": ["I2C", "SPI", "Analógico", "Outro"]}
+          },
+          "elif_value_eq_Tensão/Corrente": {
+            "Sinal de Interface:": {"values": ["Analógico", "I2C", "Outro"]}
+          },
+          "else": {
+            "Sinal de Interface:": {"values": ["Digital (High/Low)", "Analógico", "I2C", "SPI", "UART", "One-Wire", "NPN", "PNP", "Outro"]}
+          }
+        }
+      },
+      {
+        "name": "Sinal de Interface:",
+        "type": "ComboBox",
+        "logic": {
+          "if_value_in_['NPN', 'PNP']": {
+            "Estado do Contato:": {"state": "normal"}
+          },
+          "else": {
+            "Estado do Contato:": {"value": "-", "state": "disabled"}
+          }
+        }
+      },
+      {"name": "Estado do Contato:", "type": "ComboBox", "values": ["NA", "NF", "NA+NF"]},
+      {"name": "Tensão de Operação (V):", "type": "Entry"},
+      {"name": "Corrente Máx (mA):", "type": "Entry"}
+    ]
+  },
+  "Módulo": {
+    "fields": [
+      {"name": "Tipo de Módulo:", "type": "ComboBox", "values": ["Driver de Motor", "Relé/Comutação", "Comunicação (RF/WiFi)", "Conversor DC-DC", "Display", "Áudio", "Outro"]},
+      {"name": "CI Principal:", "type": "Entry"},
+      {"name": "Tensão de Alim. (V):", "type": "Entry"},
+      {"name": "Função/Aplicação:", "type": "Entry"}
+    ]
+  },
+  "CI (Circuito Integrado)": {
+    "fields": [
+      {
+        "name": "Família:",
+        "type": "ComboBox",
+        "values": ["Analógico", "Digital", "Microcontrolador", "Driver/Potência", "Comunicação", "Memória", "Outro"],
+        "logic": {
+          "if_value_eq_Analógico": {
+            "Função:": {"values": ["Amp-Op", "Timer", "Regulador de Tensão", "Comparador", "Referência de Tensão", "Outro"]}
+          },
+          "elif_value_eq_Digital": {
+            "Função:": {"values": ["Porta Lógica", "Flip-Flop", "Shift Register", "Contador", "Outro"]}
+          },
+          "elif_value_eq_Microcontrolador": {
+            "Função:": {"values": ["MCU 8-bit", "MCU 16-bit", "MCU 32-bit", "DSP", "Outro"]}
+          },
+          "elif_value_eq_Driver/Potência": {
+            "Função:": {"values": ["Gate Driver", "Ponte H / Motor", "Display Driver", "Outro"]}
+          },
+          "elif_value_eq_Comunicação": {
+            "Função:": {"values": ["Transceptor (RS-485/CAN/etc)", "Expansor de I/O", "Isolador Digital", "Outro"]}
+          },
+          "elif_value_eq_Memória": {
+            "Função:": {"values": ["EEPROM", "Flash", "SRAM", "Outro"]}
+          },
+          "else": {
+            "Função:": {"values": ["Específico/Outro"]}
+          }
+        }
+      },
+      {"name": "Função:", "type": "ComboBox"},
+      {"name": "Tensão de Oper. (V):", "type": "Entry"},
+      {"name": "Número de Pinos:", "type": "Entry"},
+      {"name": "Encapsulamento:", "type": "Entry"}
+    ]
+  },
+  "Optoacoplador": {
+    "fields": [
+      {"name": "Tipo de Saída:", "type": "ComboBox", "values": ["Fototransistor", "Fotodarlington", "Fototriac (Zero-Cross)", "Fototriac (Random)", "Saída Lógica/Rápida", "Outro"]},
+      {"name": "Canais:", "type": "ComboBox", "values": ["1 (Simples)", "2 (Duplo)", "4 (Quádruplo)", "Outro"]},
+      {"name": "Isolação (kVrms):", "type": "Entry"},
+      {"name": "Encapsulamento:", "type": "Entry"}
+    ]
+  }
+}

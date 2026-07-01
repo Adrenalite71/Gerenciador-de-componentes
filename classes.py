@@ -512,28 +512,36 @@ class PackManagerFrame(ctk.CTkFrame):
     def download_pack(self, pack_id):
         import tkinter.messagebox as messagebox
         import component_knowledge
+        import requests
         
-        # MOCK DATA for testing before GitHub integration
-        mock_data = {}
-        mock_data = {
-            "fgh40n60": {
-                "Categoria": "Transistor",
-                "Tipo": "IGBT",
-                "Encapsulamento": "TO-247",
-                "Tensão Máx (VCEO/VDS)": "600",
-                "Corrente Máx (IC/ID)": "40"
-            },
-            "ir2110": {
-                "Categoria": "CI (Circuito Integrado)",
-                "Função/Modelo": "Gate Driver High/Low Side",
-                "Número de Pinos": "14",
-                "Encapsulamento": "DIP-14"
-            }
+        # Dictionary mapping the pack IDs to their respective GitHub Raw URLs
+        # USER INSTRUCTION: Replace these placeholder URLs with your actual raw.githubusercontent.com links
+        pack_urls = {
+            "pack_inversores": "https://raw.githubusercontent.com/Adrenalite71/Gerenciador-de-componentes/refs/heads/master/packs/pack_inversores.json",
+            "pack_arduino": "https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/main/packs/pack_arduino.json"
         }
+        
+        url = pack_urls.get(pack_id)
+        if not url:
+            messagebox.showwarning("Aviso", "URL não configurada para este pacote no momento.")
+            return
             
-        if mock_data:
-            component_knowledge.merge_custom_knowledge(mock_data)
-            messagebox.showinfo("Sucesso", f"Pacote '{pack_id}' integrado com sucesso!\nComponentes mesclados sem duplicatas.")
-        else:
-            messagebox.showwarning("Aviso", "Pacote vazio ou ainda não implementado.")
+        try:
+            # Fetch the data from the web with a 10-second timeout
+            response = requests.get(url, timeout=10)
+            response.raise_for_status() 
+            
+            # Parse the raw text into a Python dictionary
+            pack_data = response.json()
+            
+            if pack_data:
+                component_knowledge.merge_custom_knowledge(pack_data)
+                messagebox.showinfo("Sucesso", f"Pacote '{pack_id}' baixado e integrado com sucesso!\nComponentes mesclados sem duplicatas.")
+            else:
+                messagebox.showwarning("Aviso", "O pacote foi baixado, mas parece estar vazio.")
+                
+        except requests.exceptions.RequestException as e:
+            messagebox.showerror("Erro de Conexão", f"Não foi possível baixar o pacote.\nVerifique sua internet ou se o link do GitHub está correto.\n\nDetalhes: {str(e)}")
+        except ValueError:
+            messagebox.showerror("Erro de Formato", "O arquivo baixado não é um JSON válido. Verifique se você usou o link 'Raw' do GitHub.")
 

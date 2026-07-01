@@ -81,7 +81,7 @@ class LocalDatabaseManager:
             "Resistor", "Capacitor", "Diodo", "Capacitor Eletrolítico", 
             "Capacitor Tântalo", "Capacitor Poliéster", "Capacitor Cerâmico", 
             "Capacitor PTH", "Capacitor SMD", "Resistor PTH", "Resistor SMD", 
-            "Transistor", "Indutor", "CI (Circuito Integrado)", "Optoacoplador", "Outros"
+            "Transistor", "Indutor", "CI (Circuito Integrado)", "Optoacoplador"
         ]
         if row and row[0] == 0:
             for cat in CATEGORIES:

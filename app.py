@@ -1237,6 +1237,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 self.relay_corrente_entry.insert(0, str(properties.get('Corrente Máx dos Contatos (A)', '')))
             elif comp[2] == "Sensor":
                 if 'Tipo' in properties: self.sensor_tipo_cb.set(properties['Tipo'])
+                self.update_sensor_sinal_options(properties.get('Tipo', ''))
                 if 'Sinal de Interface' in properties: self.sensor_sinal_cb.set(properties['Sinal de Interface'])
                 self.sensor_tensao_entry.delete(0, "end")
                 self.sensor_tensao_entry.insert(0, str(properties.get('Tensão de Operação (V)', '')))
@@ -1330,6 +1331,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                         self.relay_corrente_entry.insert(0, learned['Corrente Máx dos Contatos (A)'])
                 elif cat == "Sensor":
                     if 'Tipo' in learned: self.sensor_tipo_cb.set(learned['Tipo'])
+                    self.update_sensor_sinal_options(learned.get('Tipo', ''))
                     if 'Sinal de Interface' in learned: self.sensor_sinal_cb.set(learned['Sinal de Interface'])
                     if 'Tensão de Operação (V)' in learned:
                         self.sensor_tensao_entry.delete(0, "end")
@@ -1405,6 +1407,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             if specs:
                 if 'Tipo' in specs:
                     self.sensor_tipo_cb.set(specs['Tipo'])
+                self.update_sensor_sinal_options(specs.get('Tipo', ''))
                 if 'Sinal de Interface' in specs:
                     self.sensor_sinal_cb.set(specs['Sinal de Interface'])
                 if 'Tensão de Operação (V)' in specs:
@@ -1535,14 +1538,15 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         
         ctk.CTkLabel(self.dynamic_frame, text="Tipo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
-        self.sensor_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Temp/Umidade', 'Distância/Ultrassom', 'Presença/PIR', 'Acelerômetro/Giro', 'Tensão/Corrente', 'Indutivo', 'Capacitivo', 'Fotoelétrico', 'Outro'])
+        self.sensor_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Temp/Umidade', 'Distância/Ultrassom', 'Presença/PIR', 'Acelerômetro/Giro', 'Tensão/Corrente', 'Indutivo', 'Capacitivo', 'Fotoelétrico', 'Outro'], command=self.update_sensor_sinal_options)
         self.sensor_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
         self.sensor_tipo_cb.set('Temp/Umidade')
 
         ctk.CTkLabel(self.dynamic_frame, text="Sinal de Interface:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
-        self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'NPN (NA)', 'NPN (NF)', 'PNP (NA)', 'PNP (NF)', 'Outro'])
+        self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'Outro'])
         self.sensor_sinal_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
         self.sensor_sinal_cb.set('Digital (High/Low)')
+        self.update_sensor_sinal_options(self.sensor_tipo_cb.get())
 
         ctk.CTkLabel(self.dynamic_frame, text="Tensão de Operação (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.sensor_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
@@ -1551,6 +1555,18 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (mA):").grid(row=1, column=2, padx=5, pady=5, sticky="e")
         self.sensor_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
         self.sensor_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+
+    def update_sensor_sinal_options(self, selected_tipo):
+        industrial_types = ['Indutivo', 'Capacitivo', 'Fotoelétrico']
+        if selected_tipo in industrial_types:
+            options = ['NPN (NA)', 'NPN (NF)', 'NPN (NA+NF)', 'PNP (NA)', 'PNP (NF)', 'PNP (NA+NF)', 'Digital (High/Low)', 'Analógico', 'Outro']
+        else:
+            options = ['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'Outro']
+        
+        if hasattr(self, 'sensor_sinal_cb'):
+            self.sensor_sinal_cb.configure(values=options)
+            if self.sensor_sinal_cb.get() not in options:
+                self.sensor_sinal_cb.set(options[0])
 
     def draw_module_fields(self):
         for widget in self.dynamic_frame.winfo_children():

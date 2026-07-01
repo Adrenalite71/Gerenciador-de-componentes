@@ -92,11 +92,11 @@ def get_sensor_specs(part_number: str):
     pn_lower = part_number.lower().strip()
     
     specs = {
-        'hc-sr04': {'Tipo': 'Distância/Ultrassom', 'Sinal de Interface': 'Digital (High/Low)', 'Tensão de Operação (V)': '5', 'Corrente Máx (mA)': '15'},
+        'hc-sr04': {'Tipo': 'Distância/Ultrassom', 'Sinal de Interface': 'PNP', 'Estado do Contato': 'NA', 'Tensão de Operação (V)': '5', 'Corrente Máx (mA)': '15'},
         'dht11': {'Tipo': 'Temp/Umidade', 'Sinal de Interface': 'One-Wire', 'Tensão de Operação (V)': '3.3 - 5', 'Corrente Máx (mA)': '2.5'},
         'mpu6050': {'Tipo': 'Acelerômetro/Giro', 'Sinal de Interface': 'I2C', 'Tensão de Operação (V)': '3.3 - 5', 'Corrente Máx (mA)': '4'},
-        'hc-sr501': {'Tipo': 'Presença/PIR', 'Sinal de Interface': 'Digital (High/Low)', 'Tensão de Operação (V)': '5 - 20', 'Corrente Máx (mA)': '0.06'},
-        'lj12a3': {'Tipo': 'Indutivo', 'Sinal de Interface': 'NPN (NA)', 'Tensão de Operação (V)': '6 - 36', 'Corrente Máx (mA)': '300'},
+        'hc-sr501': {'Tipo': 'Presença/PIR', 'Sinal de Interface': 'PNP', 'Estado do Contato': 'NA', 'Tensão de Operação (V)': '5 - 20', 'Corrente Máx (mA)': '0.06'},
+        'lj12a3': {'Tipo': 'Indutivo', 'Sinal de Interface': 'NPN', 'Estado do Contato': 'NA', 'Tensão de Operação (V)': '6 - 36', 'Corrente Máx (mA)': '300'},
         'ljc18a3': {'Tipo': 'Capacitivo', 'Sinal de Interface': 'Digital (High/Low)', 'Tensão de Operação (V)': '6 - 36', 'Corrente Máx (mA)': '300'},
         'e3f-ds30': {'Tipo': 'Fotoelétrico', 'Sinal de Interface': 'Digital (High/Low)', 'Tensão de Operação (V)': '6 - 36', 'Corrente Máx (mA)': '300'}
     }

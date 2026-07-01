@@ -1039,7 +1039,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             elif cat == "Sensor":
                 if hasattr(self, "sensor_tensao_entry"):
                     self.sensor_tipo_cb.set('Temp/Umidade')
+                    self.update_sensor_sinal_options('Temp/Umidade')
                     self.sensor_sinal_cb.set('Digital (High/Low)')
+                    self.update_estado_contato_state('Digital (High/Low)')
+                    self.sensor_estado_cb.set('-')
                     self.sensor_tensao_entry.delete(0, "end")
                     self.sensor_corrente_entry.delete(0, "end")
             elif cat == "Módulo":
@@ -1239,6 +1242,8 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 if 'Tipo' in properties: self.sensor_tipo_cb.set(properties['Tipo'])
                 self.update_sensor_sinal_options(properties.get('Tipo', ''))
                 if 'Sinal de Interface' in properties: self.sensor_sinal_cb.set(properties['Sinal de Interface'])
+                self.update_estado_contato_state(properties.get('Sinal de Interface', ''))
+                if 'Estado do Contato' in properties: self.sensor_estado_cb.set(properties['Estado do Contato'])
                 self.sensor_tensao_entry.delete(0, "end")
                 self.sensor_tensao_entry.insert(0, str(properties.get('Tensão de Operação (V)', '')))
                 self.sensor_corrente_entry.delete(0, "end")
@@ -1333,6 +1338,8 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     if 'Tipo' in learned: self.sensor_tipo_cb.set(learned['Tipo'])
                     self.update_sensor_sinal_options(learned.get('Tipo', ''))
                     if 'Sinal de Interface' in learned: self.sensor_sinal_cb.set(learned['Sinal de Interface'])
+                    self.update_estado_contato_state(learned.get('Sinal de Interface', ''))
+                    if 'Estado do Contato' in learned: self.sensor_estado_cb.set(learned['Estado do Contato'])
                     if 'Tensão de Operação (V)' in learned:
                         self.sensor_tensao_entry.delete(0, "end")
                         self.sensor_tensao_entry.insert(0, learned['Tensão de Operação (V)'])
@@ -1410,6 +1417,9 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 self.update_sensor_sinal_options(specs.get('Tipo', ''))
                 if 'Sinal de Interface' in specs:
                     self.sensor_sinal_cb.set(specs['Sinal de Interface'])
+                self.update_estado_contato_state(specs.get('Sinal de Interface', ''))
+                if 'Estado do Contato' in specs:
+                    self.sensor_estado_cb.set(specs['Estado do Contato'])
                 if 'Tensão de Operação (V)' in specs:
                     self.sensor_tensao_entry.delete(0, "end")
                     self.sensor_tensao_entry.insert(0, specs['Tensão de Operação (V)'])
@@ -1537,36 +1547,54 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         
         self.dynamic_inputs = {}
         
+        import customtkinter as ctk
+        # Row 0
         ctk.CTkLabel(self.dynamic_frame, text="Tipo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.sensor_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Temp/Umidade', 'Distância/Ultrassom', 'Presença/PIR', 'Acelerômetro/Giro', 'Tensão/Corrente', 'Indutivo', 'Capacitivo', 'Fotoelétrico', 'Outro'], command=self.update_sensor_sinal_options)
         self.sensor_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-        self.sensor_tipo_cb.set('Temp/Umidade')
-
+        
         ctk.CTkLabel(self.dynamic_frame, text="Sinal de Interface:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
-        self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'Outro'])
+        self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=[], command=self.update_estado_contato_state)
         self.sensor_sinal_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
-        self.sensor_sinal_cb.set('Digital (High/Low)')
-        self.update_sensor_sinal_options(self.sensor_tipo_cb.get())
-
-        ctk.CTkLabel(self.dynamic_frame, text="Tensão de Operação (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        
+        # Row 1
+        ctk.CTkLabel(self.dynamic_frame, text="Estado do Contato:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.sensor_estado_cb = ctk.CTkComboBox(self.dynamic_frame, values=['NA', 'NF', 'NA+NF'])
+        self.sensor_estado_cb.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        
+        ctk.CTkLabel(self.dynamic_frame, text="Tensão de Operação (V):").grid(row=1, column=2, padx=5, pady=5, sticky="e")
         self.sensor_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
-        self.sensor_tensao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-        ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (mA):").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.sensor_tensao_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        
+        # Row 2
+        ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (mA):").grid(row=2, column=0, padx=5, pady=5, sticky="e")
         self.sensor_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
-        self.sensor_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        self.sensor_corrente_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        
+        self.update_sensor_sinal_options(self.sensor_tipo_cb.get())
 
     def update_sensor_sinal_options(self, selected_tipo):
         industrial_types = ['Indutivo', 'Capacitivo', 'Fotoelétrico']
         if selected_tipo in industrial_types:
-            options = ['NPN (NA)', 'NPN (NF)', 'NPN (NA+NF)', 'PNP (NA)', 'PNP (NF)', 'PNP (NA+NF)', 'Digital (High/Low)', 'Analógico', 'Outro']
+            options = ['NPN', 'PNP', 'Outro']
         else:
-            options = ['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'Outro']
+            options = ['NPN', 'PNP', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'Outro']
         
         if hasattr(self, 'sensor_sinal_cb'):
             self.sensor_sinal_cb.configure(values=options)
             if self.sensor_sinal_cb.get() not in options:
                 self.sensor_sinal_cb.set(options[0])
+            self.update_estado_contato_state(self.sensor_sinal_cb.get())
+
+    def update_estado_contato_state(self, selected_sinal):
+        if hasattr(self, 'sensor_estado_cb'):
+            if selected_sinal in ['NPN', 'PNP']:
+                self.sensor_estado_cb.configure(state="normal")
+                if not self.sensor_estado_cb.get() or self.sensor_estado_cb.get() == "-":
+                    self.sensor_estado_cb.set("NA")
+            else:
+                self.sensor_estado_cb.set("-")
+                self.sensor_estado_cb.configure(state="disabled")
 
     def draw_module_fields(self):
         for widget in self.dynamic_frame.winfo_children():
@@ -1673,6 +1701,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             properties = {
                 "Tipo": self.sensor_tipo_cb.get(),
                 "Sinal de Interface": self.sensor_sinal_cb.get(),
+                "Estado do Contato": self.sensor_estado_cb.get(),
                 "Tensão de Operação (V)": self.sensor_tensao_entry.get().strip(),
                 "Corrente Máx (mA)": self.sensor_corrente_entry.get().strip()
             }
@@ -2172,13 +2201,17 @@ class SearchFrame(ctk.CTkFrame):
                                 if v_tipo != '-': comp_type = v_tipo
                                 if v_contato != '-': raw_val = v_contato
                             elif cat == "Sensor":
-                                v_tensao = props.get('Tensão de Operação (V)', '-')
-                                v_corrente = props.get('Corrente Máx (mA)', '-')
                                 v_sinal = props.get('Sinal de Interface', '-')
                                 v_tipo = props.get('Tipo', '-')
+                                v_estado = props.get('Estado do Contato', '-')
+                                v_tensao = props.get('Tensão de Operação (V)', '-')
+                                v_corrente = props.get('Corrente Máx (mA)', '-')
                                 if v_tensao != '-': voltage = v_tensao
                                 if v_corrente != '-': tolerance = v_corrente
-                                if v_sinal != '-': comp_type = v_sinal
+                                if v_estado != '-':
+                                    comp_type = f"{v_sinal} ({v_estado})"
+                                else:
+                                    comp_type = v_sinal
                                 if v_tipo != '-': raw_val = v_tipo
                             elif cat == "Módulo":
                                 v_tensao = props.get('Tensão de Alim. (V)', '-')

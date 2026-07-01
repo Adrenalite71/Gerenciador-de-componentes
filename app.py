@@ -517,6 +517,9 @@ class CategoryManagerWindow(ctk.CTkToplevel):
         self.geometry("400x500")
         self.on_close_callback = on_close_callback
         self.protocol("WM_DELETE_WINDOW", self.on_close)
+        
+        self.lift()
+        self.focus_force()
 
         self.label = ctk.CTkLabel(
             self, text="Gerenciar Categorias", font=ctk.CTkFont(size=20, weight="bold")
@@ -1998,7 +2001,7 @@ class SearchFrame(ctk.CTkFrame):
         comp_name = values[0]
         current_qty = int(values[6])
         
-        StockAdjustmentModal(self, comp_id, comp_name, current_qty, self.perform_search)
+        StockAdjustmentModal(self, comp_id, comp_name, current_qty, self.perform_search, self.tree)
 
     def update_categories(self):
         rows = LocalDatabaseManager.get_categories()
@@ -2280,7 +2283,7 @@ class SearchFrame(ctk.CTkFrame):
 
 
 class StockAdjustmentModal(ctk.CTkToplevel):
-    def __init__(self, master, comp_id, comp_name, current_qty, callback):
+    def __init__(self, master, comp_id, comp_name, current_qty, callback, tree=None):
         super().__init__(master)
         self.title("Ajustar Estoque")
         self.geometry("350x250")
@@ -2289,72 +2292,102 @@ class StockAdjustmentModal(ctk.CTkToplevel):
         self.comp_id = comp_id
         self.current_qty = current_qty
         self.callback = callback
+        self.tree = tree
+        self.master_frame = master
         
         ctk.CTkLabel(self, text=f"Componente: {comp_name}", font=ctk.CTkFont(weight="bold")).pack(pady=(20, 10))
         ctk.CTkLabel(self, text=f"Estoque Atual: {current_qty}").pack()
         
-        self.qty_var = ctk.StringVar(value="0")
-        
+        def adjust_qty(amount, entry_widget):
+            try:
+                val = entry_widget.get().strip()
+                current = int(val) if val.lstrip('-').isdigit() else 0
+                new_val = current + amount
+                if new_val < 0:
+                    new_val = 0
+                entry_widget.delete(0, 'end')
+                entry_widget.insert(0, str(new_val))
+            except Exception as e:
+                import tkinter.messagebox as messagebox
+                messagebox.showerror("Erro Botão", f"Falha ao ajustar: {str(e)}")
+                
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.pack(pady=15)
         
-        btn_minus_100 = ctk.CTkButton(frame, text="-100", width=40, command=lambda: self.adjust_var(-100))
-        btn_minus_10 = ctk.CTkButton(frame, text="-10", width=40, command=lambda: self.adjust_var(-10))
-        btn_minus = ctk.CTkButton(frame, text="-1", width=40, command=lambda: self.adjust_var(-1))
+        btn_minus_100 = ctk.CTkButton(frame, text="-100", width=40)
+        btn_minus_10 = ctk.CTkButton(frame, text="-10", width=40)
+        btn_minus = ctk.CTkButton(frame, text="-1", width=40)
         
         btn_minus_100.grid(row=0, column=0, padx=2)
         btn_minus_10.grid(row=0, column=1, padx=2)
         btn_minus.grid(row=0, column=2, padx=2)
         
-        self.entry = ctk.CTkEntry(frame, textvariable=self.qty_var, width=60, justify="center")
-        self.entry.grid(row=0, column=3, padx=5)
+        self.qty_entry = ctk.CTkEntry(frame, width=60, justify="center")
+        self.qty_entry.insert(0, "0")
+        self.qty_entry.grid(row=0, column=3, padx=5)
         
-        btn_plus = ctk.CTkButton(frame, text="+1", width=40, command=lambda: self.adjust_var(1))
-        btn_plus_10 = ctk.CTkButton(frame, text="+10", width=40, command=lambda: self.adjust_var(10))
-        btn_plus_100 = ctk.CTkButton(frame, text="+100", width=40, command=lambda: self.adjust_var(100))
+        btn_plus = ctk.CTkButton(frame, text="+1", width=40)
+        btn_plus_10 = ctk.CTkButton(frame, text="+10", width=40)
+        btn_plus_100 = ctk.CTkButton(frame, text="+100", width=40)
         
         btn_plus.grid(row=0, column=4, padx=2)
         btn_plus_10.grid(row=0, column=5, padx=2)
         btn_plus_100.grid(row=0, column=6, padx=2)
         
+        btn_minus_100.configure(command=lambda e=self.qty_entry: adjust_qty(-100, e))
+        btn_minus_10.configure(command=lambda e=self.qty_entry: adjust_qty(-10, e))
+        btn_minus.configure(command=lambda e=self.qty_entry: adjust_qty(-1, e))
+        btn_plus.configure(command=lambda e=self.qty_entry: adjust_qty(1, e))
+        btn_plus_10.configure(command=lambda e=self.qty_entry: adjust_qty(10, e))
+        btn_plus_100.configure(command=lambda e=self.qty_entry: adjust_qty(100, e))
+        
         btn_confirm = ctk.CTkButton(self, text="Confirmar Ajuste", command=self.save)
         btn_confirm.pack(pady=10)
         
-    def adjust_var(self, amount):
-        try:
-            val = int(self.qty_var.get())
-        except ValueError:
-            val = 0
-        self.qty_var.set(str(max(0, val + amount)))
-        
     def save(self):
         try:
-            adj = int(self.qty_var.get())
-        except ValueError:
-            messagebox.showerror("Erro", "Quantidade inválida.")
-            return
+            val = self.qty_entry.get().strip()
+            new_qty = int(val) if val.lstrip('-').isdigit() else 0
             
-        new_qty = max(0, self.current_qty + adj)
-        
-        if new_qty <= 0:
-            import tkinter.messagebox as messagebox
-            import database_manager as database
-            comp_data = LocalDatabaseManager.get_component(self.comp_id)
-            if comp_data:
-                row = LocalDatabaseManager.fetch_one("SELECT s.drawer_code, s.subdivision_index FROM components c JOIN subdivisions s ON c.subdivision_id = s.id WHERE c.id = ?", (self.comp_id,))
-                if row:
-                    item_gaveta_id, item_div_num = row[0], row[1]
-                    if messagebox.askyesno("Limpar Divisão", "A quantidade chegou a 0. Deseja limpar a divisão atual?"):
-                        database.clear_division(item_gaveta_id, item_div_num)
+            # Fetch row data directly from Treeview to ensure accurate variables
+            if hasattr(self, 'tree') and self.tree and self.tree.selection():
+                selected_item = self.tree.selection()[0]
+                item_values = self.tree.item(selected_item, 'values')
+                
+                # Assuming Location is the 8th column based on typical display order, usually item_values[-1]
+                loc_string = str(item_values[-1])
+                if "-" in loc_string:
+                    gaveta_id = int(loc_string.split("-")[0])
+                    div_num = int(loc_string.split("-")[1])
+                else:
+                    gaveta_id = int(loc_string) if loc_string.isdigit() else 0
+                    div_num = 1
+            else:
+                return
+
+            if new_qty <= 0:
+                import tkinter.messagebox as messagebox
+                import database_manager as database
+                if messagebox.askyesno("Limpar Divisão", "A quantidade chegou a 0. Deseja limpar a divisão atual?"):
+                    database.clear_division(gaveta_id, div_num)
+                    self.destroy()
+                    if self.callback:
                         self.callback()
-                        self.destroy()
-                        return
-            new_qty = 0
-            
-        LocalDatabaseManager.execute_query("UPDATE components SET quantity = ? WHERE id = ?", (new_qty, self.comp_id))
-        
-        self.callback()
-        self.destroy()
+                    return
+                else:
+                    new_qty = 0
+                    self.qty_entry.delete(0, 'end')
+                    self.qty_entry.insert(0, "0")
+                    return # User declined, keep window open at 0
+
+            LocalDatabaseManager.execute_query("UPDATE components SET quantity = ? WHERE id = ?", (new_qty, self.comp_id))
+            self.destroy()
+            if self.callback:
+                self.callback()
+
+        except Exception as e:
+            import tkinter.messagebox as messagebox
+            messagebox.showerror("Erro ao Salvar", f"Ocorreu um erro interno:\n\n{str(e)}")
 
 class CalculatorsModal(ctk.CTkToplevel):
     def __init__(self, master):

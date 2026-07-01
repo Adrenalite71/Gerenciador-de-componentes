@@ -1,0 +1,552 @@
+{
+"ikw40n120h3": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "1200V",
+"Corrente Máx (IC/ID)": "40A"
+},
+"tms320f28035pnt": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Microcontrolador",
+"Função": "DSP",
+"Tensão de Oper. (V)": "3.3V",
+"Número de Pinos": "80",
+"Encapsulamento": "LQFP-80"
+},
+"acs758lcb-100b-pff-t": {
+"Categoria": "Sensor",
+"Tipo": "Tensão/Corrente",
+"Sinal de Interface": "Analógico",
+"Estado do Contato": "-",
+"Tensão de Operação (V)": "3.3V a 5.5V",
+"Corrente Máx (mA)": "13.5mA"
+},
+"pc817": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototransistor",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "5.0 kV",
+"Encapsulamento": "DIP-4"
+},
+"c3d10060a": {
+"Categoria": "Diodo",
+"Tipo": "Schottky",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "600V",
+"Corrente Máx (A)": "10A"
+},
+"2300ht-100-h-rc": {
+"Categoria": "Indutor",
+"Indutância (ex: 10µH)": "100µH",
+"Corrente Máx (ex: 2A)": "15.3A",
+"Encapsulamento": "PTH Toroidal"
+},
+"alfg2pf12": {
+"Categoria": "Relé",
+"Tipo": "Eletromecânico",
+"Tipo de Contato": "SPST-NO (1 NA)",
+"Tensão da Bobina (V)": "12V",
+"Corrente Máx dos Contatos (A)": "31A"
+},
+"b32778g0306k000": {
+"Categoria": "Capacitor PTH",
+"Capacitância (ex: 100nF)": "30µF",
+"Tensão Máx (ex: 50V)": "1100V",
+"Encapsulamento/Tipo": "Radial Boxed (4 pinos)"
+},
+"hcpl-3120-000e": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Saída Lógica/Rápida",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "3.75 kV",
+"Encapsulamento": "DIP-8"
+},
+"ir2110pbf": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "10V a 20V",
+"Número de Pinos": "14",
+"Encapsulamento": "PDIP-14"
+},
+"uc3843an": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "8.4V a 30V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"gbj2510-f": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "GBJ (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "25A"
+},
+"lm2596t-adj/nofb": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Analógico",
+"Função": "Regulador de Tensão",
+"Tensão de Oper. (V)": "4.5V a 40V",
+"Número de Pinos": "5",
+"Encapsulamento": "TO-220-5"
+},
+"si8621bc-b-is": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Isolador Digital",
+"Tensão de Oper. (V)": "2.5V a 5.5V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"adm485jnz": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Comunicação",
+"Função": "Transceptor (RS-485/CAN/etc)",
+"Tensão de Oper. (V)": "4.75V a 5.25V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"esp-wroom-32d": {
+"Categoria": "Módulo",
+"Tipo de Módulo": "Comunicação (RF/WiFi)",
+"CI Principal": "ESP32-D0WD",
+"Tensão de Alim. (V)": "3.3V",
+"Função/Aplicação": "Comunicação WiFi e Bluetooth para monitoramento remoto"
+},
+"sct3022al": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247N",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "93A"
+},
+"irf3205pbf": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "55V",
+"Corrente Máx (IC/ID)": "110A"
+},
+"s3m-e3/57t": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "SMC (SMD)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "3A"
+},
+"rc1206fr-0710kl": {
+"Categoria": "Resistor SMD",
+"Código SMD": "1002",
+"Tolerância (ex: 1%)": "1%",
+"Encapsulamento (ex: 0805)": "1206"
+},
+"cl31b106kohvpne": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "10µF",
+"Tensão Máx (ex: 50V)": "16V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"lm35dz/nofb": {
+"Categoria": "Sensor",
+"Tipo": "Temp/Umidade",
+"Sinal de Interface": "Analógico",
+"Estado do Contato": "-",
+"Tensão de Operação (V)": "4V a 30V",
+"Corrente Máx (mA)": "0.131mA"
+},
+"c4aehbu5100a11j": {
+"Categoria": "Capacitor PTH",
+"Capacitância (ex: 100nF)": "10µF",
+"Tensão Máx (ex: 50V)": "600V",
+"Encapsulamento/Tipo": "Radial Boxed (4 pinos)"
+},
+"sct3120alhr": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "21A"
+},
+"top247yn": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "85V a 265V (AC)",
+"Número de Pinos": "6",
+"Encapsulamento": "TO-220-7C"
+},
+"lm324adr": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Analógico",
+"Função": "Amp-Op",
+"Tensão de Oper. (V)": "3V a 32V",
+"Número de Pinos": "14",
+"Encapsulamento": "SOIC-14"
+},
+"sn65hvd230dr": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Comunicação",
+"Função": "Transceptor (RS-485/CAN/etc)",
+"Tensão de Oper. (V)": "3.3V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"sqp500jb-10r": {
+"Categoria": "Resistor PTH",
+"Método de Entrada": "Entrada Direta",
+"Resistência (ex: 10k)": "10R",
+"Tolerância (ex: 5%)": "5%",
+"Potência / Tamanho": "5W / Cimento"
+},
+"c1206c104k5ractu": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "104",
+"Tensão Máx (ex: 50V)": "50V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"1n4007": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-41 (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "1A"
+},
+"fgh40t65spd": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "40A"
+},
+"ikw50n65h5": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "50A"
+},
+"irgp4062dpbf": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "600V",
+"Corrente Máx (IC/ID)": "24A"
+},
+"ngtb40n120s3wg": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "1200V",
+"Corrente Máx (IC/ID)": "40A"
+},
+"fga25n120antd": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-3P",
+"Tensão Máx (VCEO/VDS)": "1200V",
+"Corrente Máx (IC/ID)": "25A"
+},
+"fgh60n60smd": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "600V",
+"Corrente Máx (IC/ID)": "60A"
+},
+"ikw20n60t": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "600V",
+"Corrente Máx (IC/ID)": "20A"
+},
+"ucc21520dw": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "3V a 18V (entrada) / 6.5V a 25V (saída)",
+"Número de Pinos": "16",
+"Encapsulamento": "SOIC-16"
+},
+"adum4135brwz": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "2.3V a 6V (entrada) / 12V a 30V (saída)",
+"Número de Pinos": "16",
+"Encapsulamento": "SOIC-16"
+},
+"ir2101s": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "10V a 20V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"ucc27524p": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "4.5V a 18V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"fan3224t": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "4.5V a 18V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"ir2113pbf": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "10V a 20V",
+"Número de Pinos": "14",
+"Encapsulamento": "PDIP-14"
+},
+"ucc27517dbvr": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "4.5V a 18V",
+"Número de Pinos": "5",
+"Encapsulamento": "SOT-23-5"
+},
+"ikw40n120h3": {
+"Categoria": "Transistor",
+"Tipo": "IGBT",
+"Polaridade": "-",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "1200V",
+"Corrente Máx (IC/ID)": "40A"
+},
+"tms320f28035pnt": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Microcontrolador",
+"Função": "DSP",
+"Tensão de Oper. (V)": "3.3V",
+"Número de Pinos": "80",
+"Encapsulamento": "LQFP-80"
+},
+"acs758lcb-100b-pff-t": {
+"Categoria": "Sensor",
+"Tipo": "Tensão/Corrente",
+"Sinal de Interface": "Analógico",
+"Estado do Contato": "-",
+"Tensão de Operação (V)": "3.3V a 5.5V",
+"Corrente Máx (mA)": "13.5mA"
+},
+"pc817": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototransistor",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "5.0 kV",
+"Encapsulamento": "DIP-4"
+},
+"c3d10060a": {
+"Categoria": "Diodo",
+"Tipo": "Schottky",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "600V",
+"Corrente Máx (A)": "10A"
+},
+"2300ht-100-h-rc": {
+"Categoria": "Indutor",
+"Indutância (ex: 10µH)": "100µH",
+"Corrente Máx (ex: 2A)": "15.3A",
+"Encapsulamento": "PTH Toroidal"
+},
+"alfg2pf12": {
+"Categoria": "Relé",
+"Tipo": "Eletromecânico",
+"Tipo de Contato": "SPST-NO (1 NA)",
+"Tensão da Bobina (V)": "12V",
+"Corrente Máx dos Contatos (A)": "31A"
+},
+"b32778g0306k000": {
+"Categoria": "Capacitor PTH",
+"Capacitância (ex: 100nF)": "30µF",
+"Tensão Máx (ex: 50V)": "1100V",
+"Encapsulamento/Tipo": "Radial Boxed (4 pinos)"
+},
+"hcpl-3120-000e": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Saída Lógica/Rápida",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "3.75 kV",
+"Encapsulamento": "DIP-8"
+},
+"ir2110pbf": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Gate Driver",
+"Tensão de Oper. (V)": "10V a 20V",
+"Número de Pinos": "14",
+"Encapsulamento": "PDIP-14"
+},
+"uc3843an": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "8.4V a 30V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"gbj2510-f": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "GBJ (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "25A"
+},
+"lm2596t-adj/nofb": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Analógico",
+"Função": "Regulador de Tensão",
+"Tensão de Oper. (V)": "4.5V a 40V",
+"Número de Pinos": "5",
+"Encapsulamento": "TO-220-5"
+},
+"si8621bc-b-is": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Isolador Digital",
+"Tensão de Oper. (V)": "2.5V a 5.5V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"adm485jnz": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Comunicação",
+"Função": "Transceptor (RS-485/CAN/etc)",
+"Tensão de Oper. (V)": "4.75V a 5.25V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"esp-wroom-32d": {
+"Categoria": "Módulo",
+"Tipo de Módulo": "Comunicação (RF/WiFi)",
+"CI Principal": "ESP32-D0WD",
+"Tensão de Alim. (V)": "3.3V",
+"Função/Aplicação": "Comunicação WiFi e Bluetooth para monitoramento remoto"
+},
+"sct3022al": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247N",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "93A"
+},
+"irf3205pbf": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "55V",
+"Corrente Máx (IC/ID)": "110A"
+},
+"s3m-e3/57t": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "SMC (SMD)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "3A"
+},
+"rc1206fr-0710kl": {
+"Categoria": "Resistor SMD",
+"Código SMD": "1002",
+"Tolerância (ex: 1%)": "1%",
+"Encapsulamento (ex: 0805)": "1206"
+},
+"cl31b106kohvpne": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "10µF",
+"Tensão Máx (ex: 50V)": "16V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"lm35dz/nofb": {
+"Categoria": "Sensor",
+"Tipo": "Temp/Umidade",
+"Sinal de Interface": "Analógico",
+"Estado do Contato": "-",
+"Tensão de Operação (V)": "4V a 30V",
+"Corrente Máx (mA)": "0.131mA"
+},
+"c4aehbu5100a11j": {
+"Categoria": "Capacitor PTH",
+"Capacitância (ex: 100nF)": "10µF",
+"Tensão Máx (ex: 50V)": "600V",
+"Encapsulamento/Tipo": "Radial Boxed (4 pinos)"
+},
+"sct3120alhr": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "21A"
+},
+"top247yn": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Driver/Potência",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "85V a 265V (AC)",
+"Número de Pinos": "6",
+"Encapsulamento": "TO-220-7C"
+},
+"lm324adr": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Analógico",
+"Função": "Amp-Op",
+"Tensão de Oper. (V)": "3V a 32V",
+"Número de Pinos": "14",
+"Encapsulamento": "SOIC-14"
+},
+"sn65hvd230dr": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Comunicação",
+"Função": "Transceptor (RS-485/CAN/etc)",
+"Tensão de Oper. (V)": "3.3V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"sqp500jb-10r": {
+"Categoria": "Resistor PTH",
+"Método de Entrada": "Entrada Direta",
+"Resistência (ex: 10k)": "10R",
+"Tolerância (ex: 5%)": "5%",
+"Potência / Tamanho": "5W / Cimento"
+},
+"c1206c104k5ractu": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "104",
+"Tensão Máx (ex: 50V)": "50V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"1n4007": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-41 (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "1A"
+}
+}

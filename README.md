@@ -9,6 +9,13 @@ Uma aplicação desktop intuitiva desenvolvida para organizar, gerenciar e pesqu
 - **Calculadoras Integradas Bidirecionais:** Ferramentas nativas para decodificação rápida direto na bancada. Inclui calculadora bidirecional inteligente para Resistores PTH (Cores ↔ Valores) e decodificadores automáticos de códigos alfanuméricos para Resistores SMD e Capacitores SMD.
 - **Subdivisões Dinâmicas de Gavetas:** Controle total sobre o seu armazenamento físico. Adicione, edite ou exclua gavetas com quantidades ilimitadas e flexíveis de subdivisões. O preenchimento automático sincroniza dados e cores nativamente ao editar.
 - **Privacidade e Persistência de Dados:** Todo o inventário é salvo de forma segura (SQLite), operando de forma 100% offline no modo local ou centralizado com segurança na sua própria rede.
+- <img width="1404" height="833" alt="image" src="https://github.com/user-attachments/assets/2254f7af-661a-43fa-936a-f5f6c3b4220e" />
+- <img width="1399" height="830" alt="image" src="https://github.com/user-attachments/assets/86f3d4c7-056b-4e34-9f81-81367776c420" />
+- <img width="558" height="434" alt="image" src="https://github.com/user-attachments/assets/912be76f-58cc-4855-bfdd-deda0e7b1bd6" />
+- <img width="1403" height="837" alt="image" src="https://github.com/user-attachments/assets/57f42ab6-517a-435b-8439-cc06483a5d4e" />
+
+
+
 
 ## Como Baixar e Usar
 

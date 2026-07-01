@@ -1,4 +1,4 @@
-from classes import SMDDecoder, PTHResistorCalculator, PTHResistorReverseParser
+from classes import SMDDecoder, PTHResistorCalculator, PTHResistorReverseParser, PackManagerFrame
 import sqlite3
 
 # pyrefly: ignore [missing-import]
@@ -284,6 +284,7 @@ class CategoryUIBuilder:
                 if val in ["BJT", "Darlington"]:
                     pol_label.grid()
                     pol_combo.grid()
+                    pol_combo.configure(state="normal")
                     pol_vals = ["NPN", "PNP"]
                     if is_search:
                         pol_vals.insert(0, "")
@@ -293,6 +294,7 @@ class CategoryUIBuilder:
                 elif val == "MOSFET":
                     pol_label.grid()
                     pol_combo.grid()
+                    pol_combo.configure(state="normal")
                     pol_vals = ["Canal N", "Canal P"]
                     if is_search:
                         pol_vals.insert(0, "")
@@ -300,12 +302,14 @@ class CategoryUIBuilder:
                     if inputs["transistor_pol"].get() not in pol_vals:
                         inputs["transistor_pol"].set(pol_vals[0])
                 elif val == "IGBT":
-                    pol_label.grid_remove()
-                    pol_combo.grid_remove()
-                    inputs["transistor_pol"].set("")
+                    pol_label.grid()
+                    pol_combo.grid()
+                    pol_combo.configure(values=["-"], state="disabled")
+                    inputs["transistor_pol"].set("-")
                 else:  # empty etc (for search)
                     pol_label.grid()
                     pol_combo.grid()
+                    pol_combo.configure(state="normal")
                     pol_vals = ["NPN", "PNP", "Canal N", "Canal P"]
                     if is_search:
                         pol_vals.insert(0, "")
@@ -517,6 +521,9 @@ class CategoryManagerWindow(ctk.CTkToplevel):
         self.geometry("400x500")
         self.on_close_callback = on_close_callback
         self.protocol("WM_DELETE_WINDOW", self.on_close)
+        
+        self.lift()
+        self.focus_force()
 
         self.label = ctk.CTkLabel(
             self, text="Gerenciar Categorias", font=ctk.CTkFont(size=20, weight="bold")
@@ -939,8 +946,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             self, text="Salvar Componente", command=self.save_component, height=40
         )
         self.submit_btn.grid(
-            row=2, column=0, columnspan=2, pady=20, padx=20, sticky="w"
+            row=2, column=0, pady=20, padx=20, sticky="w"
         )
+        self.delete_button = ctk.CTkButton(self, text="Limpar Divisão", fg_color="#d32f2f", hover_color="#b71c1c", command=self.delete_current_division, height=40)
+        self.delete_button.grid(row=2, column=1, padx=20, pady=20, sticky="w")
 
         self.on_category_change(self.cat_var.get())
 
@@ -1036,6 +1045,21 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     self.relay_contato_cb.set('SPDT (1 Reversível)')
                     self.relay_bobina_entry.delete(0, "end")
                     self.relay_corrente_entry.delete(0, "end")
+            elif cat == "Sensor":
+                if hasattr(self, "sensor_tensao_entry"):
+                    self.sensor_tipo_cb.set('Temp/Umidade')
+                    self.update_sensor_sinal_options('Temp/Umidade')
+                    self.sensor_sinal_cb.set('Digital (High/Low)')
+                    self.update_estado_contato_state('Digital (High/Low)')
+                    self.sensor_estado_cb.set('-')
+                    self.sensor_tensao_entry.delete(0, "end")
+                    self.sensor_corrente_entry.delete(0, "end")
+            elif cat == "Módulo":
+                if hasattr(self, "mod_tensao_entry"):
+                    self.mod_tipo_cb.set('Driver de Motor')
+                    self.mod_ci_entry.delete(0, "end")
+                    self.mod_tensao_entry.delete(0, "end")
+                    self.mod_funcao_entry.delete(0, "end")
                     
             return
             
@@ -1223,6 +1247,24 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 self.relay_bobina_entry.insert(0, str(properties.get('Tensão da Bobina (V)', '')))
                 self.relay_corrente_entry.delete(0, "end")
                 self.relay_corrente_entry.insert(0, str(properties.get('Corrente Máx dos Contatos (A)', '')))
+            elif comp[2] == "Sensor":
+                if 'Tipo' in properties: self.sensor_tipo_cb.set(properties['Tipo'])
+                self.update_sensor_sinal_options(properties.get('Tipo', ''))
+                if 'Sinal de Interface' in properties: self.sensor_sinal_cb.set(properties['Sinal de Interface'])
+                self.update_estado_contato_state(properties.get('Sinal de Interface', ''))
+                if 'Estado do Contato' in properties: self.sensor_estado_cb.set(properties['Estado do Contato'])
+                self.sensor_tensao_entry.delete(0, "end")
+                self.sensor_tensao_entry.insert(0, str(properties.get('Tensão de Operação (V)', '')))
+                self.sensor_corrente_entry.delete(0, "end")
+                self.sensor_corrente_entry.insert(0, str(properties.get('Corrente Máx (mA)', '')))
+            elif comp[2] == "Módulo":
+                if 'Tipo de Módulo' in properties: self.mod_tipo_cb.set(properties['Tipo de Módulo'])
+                self.mod_ci_entry.delete(0, "end")
+                self.mod_ci_entry.insert(0, str(properties.get('CI Principal', '')))
+                self.mod_tensao_entry.delete(0, "end")
+                self.mod_tensao_entry.insert(0, str(properties.get('Tensão de Alim. (V)', '')))
+                self.mod_funcao_entry.delete(0, "end")
+                self.mod_funcao_entry.insert(0, str(properties.get('Função/Aplicação', '')))
             else:
                 set_val("raw_value", c_raw)
                 set_val("voltage", c_volt)
@@ -1262,6 +1304,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             if len(self.bridge_tensao_entry.get().strip()) > 0: return
         elif cat == "Relé" and hasattr(self, "relay_bobina_entry"):
             if len(self.relay_bobina_entry.get().strip()) > 0: return
+        elif cat == "Sensor" and hasattr(self, "sensor_tensao_entry"):
+            if len(self.sensor_tensao_entry.get().strip()) > 0: return
+        elif cat == "Módulo" and hasattr(self, "mod_tensao_entry"):
+            if len(self.mod_tensao_entry.get().strip()) > 0: return
             
         self.auto_fill_specs(event)
         
@@ -1297,6 +1343,29 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     if 'Corrente Máx dos Contatos (A)' in learned:
                         self.relay_corrente_entry.delete(0, "end")
                         self.relay_corrente_entry.insert(0, learned['Corrente Máx dos Contatos (A)'])
+                elif cat == "Sensor":
+                    if 'Tipo' in learned: self.sensor_tipo_cb.set(learned['Tipo'])
+                    self.update_sensor_sinal_options(learned.get('Tipo', ''))
+                    if 'Sinal de Interface' in learned: self.sensor_sinal_cb.set(learned['Sinal de Interface'])
+                    self.update_estado_contato_state(learned.get('Sinal de Interface', ''))
+                    if 'Estado do Contato' in learned: self.sensor_estado_cb.set(learned['Estado do Contato'])
+                    if 'Tensão de Operação (V)' in learned:
+                        self.sensor_tensao_entry.delete(0, "end")
+                        self.sensor_tensao_entry.insert(0, learned['Tensão de Operação (V)'])
+                    if 'Corrente Máx (mA)' in learned:
+                        self.sensor_corrente_entry.delete(0, "end")
+                        self.sensor_corrente_entry.insert(0, learned['Corrente Máx (mA)'])
+                elif cat == "Módulo":
+                    if 'Tipo de Módulo' in learned: self.mod_tipo_cb.set(learned['Tipo de Módulo'])
+                    if 'CI Principal' in learned:
+                        self.mod_ci_entry.delete(0, "end")
+                        self.mod_ci_entry.insert(0, learned['CI Principal'])
+                    if 'Tensão de Alim. (V)' in learned:
+                        self.mod_tensao_entry.delete(0, "end")
+                        self.mod_tensao_entry.insert(0, learned['Tensão de Alim. (V)'])
+                    if 'Função/Aplicação' in learned:
+                        self.mod_funcao_entry.delete(0, "end")
+                        self.mod_funcao_entry.insert(0, learned['Função/Aplicação'])
                 else:
                     for k, v in learned.items():
                         if k in self.dynamic_inputs:
@@ -1348,6 +1417,39 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 if 'Corrente Máx dos Contatos (A)' in specs:
                     self.relay_corrente_entry.delete(0, "end")
                     self.relay_corrente_entry.insert(0, specs['Corrente Máx dos Contatos (A)'])
+        elif cat == "Sensor":
+            from component_knowledge import get_sensor_specs
+            specs = get_sensor_specs(name)
+            if specs:
+                if 'Tipo' in specs:
+                    self.sensor_tipo_cb.set(specs['Tipo'])
+                self.update_sensor_sinal_options(specs.get('Tipo', ''))
+                if 'Sinal de Interface' in specs:
+                    self.sensor_sinal_cb.set(specs['Sinal de Interface'])
+                self.update_estado_contato_state(specs.get('Sinal de Interface', ''))
+                if 'Estado do Contato' in specs:
+                    self.sensor_estado_cb.set(specs['Estado do Contato'])
+                if 'Tensão de Operação (V)' in specs:
+                    self.sensor_tensao_entry.delete(0, "end")
+                    self.sensor_tensao_entry.insert(0, specs['Tensão de Operação (V)'])
+                if 'Corrente Máx (mA)' in specs:
+                    self.sensor_corrente_entry.delete(0, "end")
+                    self.sensor_corrente_entry.insert(0, specs['Corrente Máx (mA)'])
+        elif cat == "Módulo":
+            from component_knowledge import get_module_specs
+            specs = get_module_specs(name)
+            if specs:
+                if 'Tipo de Módulo' in specs:
+                    self.mod_tipo_cb.set(specs['Tipo de Módulo'])
+                if 'CI Principal' in specs:
+                    self.mod_ci_entry.delete(0, "end")
+                    self.mod_ci_entry.insert(0, specs['CI Principal'])
+                if 'Tensão de Alim. (V)' in specs:
+                    self.mod_tensao_entry.delete(0, "end")
+                    self.mod_tensao_entry.insert(0, specs['Tensão de Alim. (V)'])
+                if 'Função/Aplicação' in specs:
+                    self.mod_funcao_entry.delete(0, "end")
+                    self.mod_funcao_entry.insert(0, specs['Função/Aplicação'])
         elif cat == "Transistor":
             from component_knowledge import get_transistor_specs
             specs = get_transistor_specs(name)
@@ -1370,11 +1472,27 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     if 'Polaridade' in specs and "transistor_pol" in self.dynamic_inputs:
                         self.dynamic_inputs["transistor_pol"].set(specs['Polaridade'])
                     if 'Encapsulamento' in specs and "component_type" in self.dynamic_inputs:
-                        self.dynamic_inputs["component_type"].set(specs['Encapsulamento'])
+                        self.dynamic_inputs["component_type"].delete(0, "end")
+                        self.dynamic_inputs["component_type"].insert(0, specs['Encapsulamento'])
                     if 'Tensão Máx (VCEO/VDS)' in specs and "voltage" in self.dynamic_inputs:
-                        self.dynamic_inputs["voltage"].set(specs['Tensão Máx (VCEO/VDS)'])
+                        self.dynamic_inputs["voltage"].delete(0, "end")
+                        self.dynamic_inputs["voltage"].insert(0, specs['Tensão Máx (VCEO/VDS)'])
                     if 'Corrente Máx (IC/ID)' in specs and "tolerance" in self.dynamic_inputs:
-                        self.dynamic_inputs["tolerance"].set(specs['Corrente Máx (IC/ID)'])
+                        self.dynamic_inputs["tolerance"].delete(0, "end")
+                        self.dynamic_inputs["tolerance"].insert(0, specs['Corrente Máx (IC/ID)'])
+        elif cat == "CI (Circuito Integrado)":
+            from component_knowledge import get_custom_specs
+            specs = get_custom_specs(name)
+            if specs:
+                if 'Função/Modelo' in specs and "raw_value" in self.dynamic_inputs:
+                    self.dynamic_inputs["raw_value"].delete(0, "end")
+                    self.dynamic_inputs["raw_value"].insert(0, specs['Função/Modelo'])
+                if 'Número de Pinos' in specs and "tolerance" in self.dynamic_inputs:
+                    self.dynamic_inputs["tolerance"].delete(0, "end")
+                    self.dynamic_inputs["tolerance"].insert(0, specs['Número de Pinos'])
+                if 'Encapsulamento' in specs and "component_type" in self.dynamic_inputs:
+                    self.dynamic_inputs["component_type"].delete(0, "end")
+                    self.dynamic_inputs["component_type"].insert(0, specs['Encapsulamento'])
 
     def draw_diode_fields(self):
         for widget in self.dynamic_frame.winfo_children():
@@ -1448,6 +1566,93 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.relay_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
         self.relay_corrente_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
+    def draw_sensor_fields(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
+        
+        self.dynamic_inputs = {}
+        
+        import customtkinter as ctk
+        # Row 0
+        ctk.CTkLabel(self.dynamic_frame, text="Tipo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.sensor_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Temp/Umidade', 'Distância/Ultrassom', 'Presença/PIR', 'Acelerômetro/Giro', 'Tensão/Corrente', 'Indutivo', 'Capacitivo', 'Fotoelétrico', 'Outro'], command=self.update_sensor_sinal_options)
+        self.sensor_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        
+        ctk.CTkLabel(self.dynamic_frame, text="Sinal de Interface:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+        self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=[], command=self.update_estado_contato_state)
+        self.sensor_sinal_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+        
+        # Row 1
+        ctk.CTkLabel(self.dynamic_frame, text="Estado do Contato:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.sensor_estado_cb = ctk.CTkComboBox(self.dynamic_frame, values=['NA', 'NF', 'NA+NF'])
+        self.sensor_estado_cb.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        
+        ctk.CTkLabel(self.dynamic_frame, text="Tensão de Operação (V):").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.sensor_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.sensor_tensao_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        
+        # Row 2
+        ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (mA):").grid(row=2, column=0, padx=5, pady=5, sticky="e")
+        self.sensor_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.sensor_corrente_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        
+        self.update_sensor_sinal_options(self.sensor_tipo_cb.get())
+
+    def update_sensor_sinal_options(self, selected_tipo):
+        if selected_tipo in ['Indutivo', 'Capacitivo', 'Fotoelétrico']:
+            options = ['NPN', 'PNP', 'Outro']
+        elif selected_tipo == 'Temp/Umidade':
+            options = ['One-Wire', 'I2C', 'SPI', 'Analógico', 'Outro']
+        elif selected_tipo == 'Distância/Ultrassom':
+            options = ['Digital (Pulse)', 'I2C', 'UART', 'Analógico', 'Outro']
+        elif selected_tipo == 'Presença/PIR':
+            options = ['Digital (High/Low)', 'Outro']
+        elif selected_tipo == 'Acelerômetro/Giro':
+            options = ['I2C', 'SPI', 'Analógico', 'Outro']
+        elif selected_tipo == 'Tensão/Corrente':
+            options = ['Analógico', 'I2C', 'Outro']
+        else:
+            options = ['Digital (High/Low)', 'Analógico', 'I2C', 'SPI', 'UART', 'One-Wire', 'NPN', 'PNP', 'Outro']
+        
+        if hasattr(self, 'sensor_sinal_cb'):
+            self.sensor_sinal_cb.configure(values=options)
+            if self.sensor_sinal_cb.get() not in options:
+                self.sensor_sinal_cb.set(options[0])
+            self.update_estado_contato_state(self.sensor_sinal_cb.get())
+
+    def update_estado_contato_state(self, selected_sinal):
+        if hasattr(self, 'sensor_estado_cb'):
+            if selected_sinal in ['NPN', 'PNP']:
+                self.sensor_estado_cb.configure(state="normal")
+                if not self.sensor_estado_cb.get() or self.sensor_estado_cb.get() == "-":
+                    self.sensor_estado_cb.set("NA")
+            else:
+                self.sensor_estado_cb.set("-")
+                self.sensor_estado_cb.configure(state="disabled")
+
+    def draw_module_fields(self):
+        for widget in self.dynamic_frame.winfo_children():
+            widget.destroy()
+        
+        self.dynamic_inputs = {}
+        
+        ctk.CTkLabel(self.dynamic_frame, text="Tipo de Módulo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.mod_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Driver de Motor', 'Relé/Comutação', 'Comunicação (RF/WiFi)', 'Conversor DC-DC', 'Display', 'Áudio', 'Outro'])
+        self.mod_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.mod_tipo_cb.set('Driver de Motor')
+
+        ctk.CTkLabel(self.dynamic_frame, text="CI Principal:").grid(row=0, column=2, padx=5, pady=5, sticky="e")
+        self.mod_ci_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.mod_ci_entry.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Tensão de Alim. (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.mod_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.mod_tensao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        ctk.CTkLabel(self.dynamic_frame, text="Função/Aplicação:").grid(row=1, column=2, padx=5, pady=5, sticky="e")
+        self.mod_funcao_entry = ctk.CTkEntry(self.dynamic_frame)
+        self.mod_funcao_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+
     def on_category_change(self, category):
         if hasattr(self, '_current_ui_category') and self._current_ui_category == category:
             return
@@ -1461,6 +1666,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             self.draw_bridge_fields()
         elif category == "Relé":
             self.draw_relay_fields()
+        elif category == "Sensor":
+            self.draw_sensor_fields()
+        elif category == "Módulo":
+            self.draw_module_fields()
         else:
             cat_config = getattr(self, "cat_logic_map", {}).get(
                 category, {"logic_type": "Outros", "fields": "[]"}
@@ -1470,6 +1679,43 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             )
             
         self._current_ui_category = category
+
+    def delete_current_division(self):
+        try:
+            gaveta = self.drawer_var.get()
+            divisao = self.slot_var.get()
+            
+            if "Vazio" in divisao or not gaveta or not divisao:
+                return
+            
+            import tkinter.messagebox as messagebox
+            import database_manager as database
+            
+            if messagebox.askyesno("Confirmar", f"Deseja limpar a {divisao.split('-')[0].strip()} da gaveta {gaveta}?"):
+                gaveta_id = gaveta
+                div_num = int(divisao.split(' ')[1])
+                
+                # Clear from database
+                database.clear_division(gaveta_id, div_num)
+                
+                # Refresh division dropdown list
+                if hasattr(self, 'on_drawer_select'):
+                    self.on_drawer_select(gaveta)
+                
+                # Force the UI to clear the fields visually
+                self.name_entry.delete(0, 'end')
+                self.qty_entry.delete(0, 'end')
+                
+                self.cat_var.set("")
+                for widget in self.dynamic_frame.winfo_children():
+                    widget.destroy()
+                self.dynamic_inputs.clear()
+                    
+                messagebox.showinfo("Sucesso", "Divisão limpa e zerada com sucesso!")
+        
+        except Exception as e:
+            import tkinter.messagebox as messagebox
+            messagebox.showerror("Erro Crítico", f"Falha ao tentar limpar a divisão:\n\n{str(e)}")
 
     def save_component(self):
         name = self.name_entry.get().strip()
@@ -1517,6 +1763,33 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 "Corrente Máx (A)": self.bridge_corrente_entry.get().strip()
             }
             logic_type = "Ponte Retificadora"
+            normalized_val = None
+        elif category == "Sensor":
+            raw_val = ""
+            voltage = ""
+            tolerance = ""
+            comp_type = ""
+            properties = {
+                "Tipo": self.sensor_tipo_cb.get(),
+                "Sinal de Interface": self.sensor_sinal_cb.get(),
+                "Estado do Contato": self.sensor_estado_cb.get(),
+                "Tensão de Operação (V)": self.sensor_tensao_entry.get().strip(),
+                "Corrente Máx (mA)": self.sensor_corrente_entry.get().strip()
+            }
+            logic_type = "Sensor"
+            normalized_val = None
+        elif category == "Módulo":
+            raw_val = ""
+            voltage = ""
+            tolerance = ""
+            comp_type = ""
+            properties = {
+                "Tipo de Módulo": self.mod_tipo_cb.get(),
+                "CI Principal": self.mod_ci_entry.get().strip(),
+                "Tensão de Alim. (V)": self.mod_tensao_entry.get().strip(),
+                "Função/Aplicação": self.mod_funcao_entry.get().strip()
+            }
+            logic_type = "Módulo"
             normalized_val = None
         elif category == "Relé":
             raw_val = ""
@@ -1768,7 +2041,7 @@ class SearchFrame(ctk.CTkFrame):
         comp_name = values[0]
         current_qty = int(values[6])
         
-        StockAdjustmentModal(self, comp_id, comp_name, current_qty, self.perform_search)
+        StockAdjustmentModal(self, comp_id, comp_name, current_qty, self.perform_search, self.tree)
 
     def update_categories(self):
         rows = LocalDatabaseManager.get_categories()
@@ -1998,6 +2271,28 @@ class SearchFrame(ctk.CTkFrame):
                                 if v_contatos != '-': tolerance = v_contatos
                                 if v_tipo != '-': comp_type = v_tipo
                                 if v_contato != '-': raw_val = v_contato
+                            elif cat == "Sensor":
+                                v_sinal = props.get('Sinal de Interface', '-')
+                                v_tipo = props.get('Tipo', '-')
+                                v_estado = props.get('Estado do Contato', '-')
+                                v_tensao = props.get('Tensão de Operação (V)', '-')
+                                v_corrente = props.get('Corrente Máx (mA)', '-')
+                                if v_tensao != '-': voltage = v_tensao
+                                if v_corrente != '-': tolerance = v_corrente
+                                if v_estado != '-':
+                                    comp_type = f"{v_sinal} ({v_estado})"
+                                else:
+                                    comp_type = v_sinal
+                                if v_tipo != '-': raw_val = v_tipo
+                            elif cat == "Módulo":
+                                v_tensao = props.get('Tensão de Alim. (V)', '-')
+                                v_ci = props.get('CI Principal', '-')
+                                v_tipo = props.get('Tipo de Módulo', '-')
+                                v_funcao = props.get('Função/Aplicação', '-')
+                                if v_tensao != '-': voltage = v_tensao
+                                if v_ci != '-': tolerance = v_ci
+                                if v_tipo != '-': comp_type = v_tipo
+                                if v_funcao != '-': raw_val = v_funcao
 
                         active_cols = self.tree["columns"]
                         row_values = []
@@ -2006,10 +2301,10 @@ class SearchFrame(ctk.CTkFrame):
                             elif col == "Categoria": row_values.append(cat)
                             elif col == "Qtd": row_values.append(str(row["quantity"]))
                             elif col == "Localização": row_values.append(str(row["Location"]))
-                            elif col == "Valor/Desc": row_values.append(raw_val)
-                            elif col == "Tensão": row_values.append(voltage)
-                            elif col == "Tol/Corrente": row_values.append(tolerance)
-                            elif col == "Tipo/Encaps.": row_values.append(comp_type)
+                            elif col == "Valor/Desc": row_values.append(str(raw_val) if raw_val is not None else "-")
+                            elif col == "Tensão": row_values.append(str(voltage) if voltage is not None else "-")
+                            elif col == "Tol/Corrente": row_values.append(str(tolerance) if tolerance is not None else "-")
+                            elif col == "Tipo/Encaps.": row_values.append(str(comp_type) if comp_type is not None else "-")
                             else:
                                 val = props.get(col, "-")
                                 if not str(val).strip():
@@ -2028,7 +2323,7 @@ class SearchFrame(ctk.CTkFrame):
 
 
 class StockAdjustmentModal(ctk.CTkToplevel):
-    def __init__(self, master, comp_id, comp_name, current_qty, callback):
+    def __init__(self, master, comp_id, comp_name, current_qty, callback, tree=None):
         super().__init__(master)
         self.title("Ajustar Estoque")
         self.geometry("350x250")
@@ -2037,51 +2332,115 @@ class StockAdjustmentModal(ctk.CTkToplevel):
         self.comp_id = comp_id
         self.current_qty = current_qty
         self.callback = callback
+        self.tree = tree
+        self.master_frame = master
         
         ctk.CTkLabel(self, text=f"Componente: {comp_name}", font=ctk.CTkFont(weight="bold")).pack(pady=(20, 10))
         ctk.CTkLabel(self, text=f"Estoque Atual: {current_qty}").pack()
         
-        self.qty_var = ctk.StringVar(value="0")
-        
+        def adjust_qty(amount, entry_widget):
+            try:
+                val = entry_widget.get().strip()
+                if not val or val == '+' or val == '-':
+                    current_delta = 0
+                else:
+                    current_delta = int(val)
+                
+                new_delta = current_delta + amount
+                
+                # Prevent withdrawing more than what exists in stock
+                if self.current_qty + new_delta < 0:
+                    new_delta = -self.current_qty
+                    
+                entry_widget.delete(0, 'end')
+                if new_delta > 0:
+                    entry_widget.insert(0, f"+{new_delta}")
+                else:
+                    entry_widget.insert(0, str(new_delta))
+            except Exception:
+                pass
+                
         frame = ctk.CTkFrame(self, fg_color="transparent")
         frame.pack(pady=15)
         
-        btn_minus = ctk.CTkButton(frame, text="-1", width=40, command=lambda: self.adjust_var(-1))
-        btn_minus.grid(row=0, column=0, padx=5)
+        btn_minus_100 = ctk.CTkButton(frame, text="-100", width=40)
+        btn_minus_10 = ctk.CTkButton(frame, text="-10", width=40)
+        btn_minus = ctk.CTkButton(frame, text="-1", width=40)
         
-        self.entry = ctk.CTkEntry(frame, textvariable=self.qty_var, width=60, justify="center")
-        self.entry.grid(row=0, column=1, padx=5)
+        btn_minus_100.grid(row=0, column=0, padx=2)
+        btn_minus_10.grid(row=0, column=1, padx=2)
+        btn_minus.grid(row=0, column=2, padx=2)
         
-        btn_plus = ctk.CTkButton(frame, text="+1", width=40, command=lambda: self.adjust_var(1))
-        btn_plus.grid(row=0, column=2, padx=5)
+        self.qty_entry = ctk.CTkEntry(frame, width=60, justify="center")
+        self.qty_entry.delete(0, 'end')
+        self.qty_entry.insert(0, "0")
+        self.qty_entry.grid(row=0, column=3, padx=5)
+        
+        btn_plus = ctk.CTkButton(frame, text="+1", width=40)
+        btn_plus_10 = ctk.CTkButton(frame, text="+10", width=40)
+        btn_plus_100 = ctk.CTkButton(frame, text="+100", width=40)
+        
+        btn_plus.grid(row=0, column=4, padx=2)
+        btn_plus_10.grid(row=0, column=5, padx=2)
+        btn_plus_100.grid(row=0, column=6, padx=2)
+        
+        btn_minus_100.configure(command=lambda e=self.qty_entry: adjust_qty(-100, e))
+        btn_minus_10.configure(command=lambda e=self.qty_entry: adjust_qty(-10, e))
+        btn_minus.configure(command=lambda e=self.qty_entry: adjust_qty(-1, e))
+        btn_plus.configure(command=lambda e=self.qty_entry: adjust_qty(1, e))
+        btn_plus_10.configure(command=lambda e=self.qty_entry: adjust_qty(10, e))
+        btn_plus_100.configure(command=lambda e=self.qty_entry: adjust_qty(100, e))
         
         btn_confirm = ctk.CTkButton(self, text="Confirmar Ajuste", command=self.save)
         btn_confirm.pack(pady=10)
         
-    def adjust_var(self, amount):
-        try:
-            val = int(self.qty_var.get())
-        except:
-            val = 0
-        self.qty_var.set(str(val + amount))
-        
     def save(self):
         try:
-            adj = int(self.qty_var.get())
-        except:
-            messagebox.showerror("Erro", "Quantidade inválida.")
-            return
+            val = self.qty_entry.get().strip()
+            if not val or val == '+' or val == '-':
+                delta = 0
+            else:
+                delta = int(val)
             
-        if adj == 0:
+            final_qty = self.current_qty + delta
+            
+            # Fetch row data directly from Treeview to ensure accurate variables
+            if hasattr(self, 'tree') and self.tree and self.tree.selection():
+                selected_item = self.tree.selection()[0]
+                item_values = self.tree.item(selected_item, 'values')
+                
+                loc_string = str(item_values[-1])
+                if "-" in loc_string:
+                    gaveta_id = int(loc_string.split("-")[0])
+                    div_num = int(loc_string.split("-")[1])
+                else:
+                    gaveta_id = int(loc_string) if loc_string.isdigit() else 0
+                    div_num = 1
+            else:
+                return
+
+            if final_qty <= 0:
+                import tkinter.messagebox as messagebox
+                import database_manager as database
+                if messagebox.askyesno("Limpar Divisão", "O estoque chegará a 0. Deseja limpar a divisão atual?"):
+                    database.clear_division(gaveta_id, div_num)
+                    self.destroy()
+                    if self.callback:
+                        self.callback()
+                    return
+                else:
+                    self.qty_entry.delete(0, 'end')
+                    self.qty_entry.insert(0, "0")
+                    return
+
+            LocalDatabaseManager.execute_query("UPDATE components SET quantity = ? WHERE id = ?", (final_qty, self.comp_id))
             self.destroy()
-            return
-            
-        new_qty = max(0, self.current_qty + adj)
-        
-        LocalDatabaseManager.execute_query("UPDATE components SET quantity = ? WHERE id = ?", (new_qty, self.comp_id))
-        
-        self.callback()
-        self.destroy()
+            if self.callback:
+                self.callback()
+
+        except Exception as e:
+            import tkinter.messagebox as messagebox
+            messagebox.showerror("Erro ao Salvar", f"Ocorreu um erro interno:\n\n{str(e)}")
 
 class CalculatorsModal(ctk.CTkToplevel):
     def __init__(self, master):
@@ -2274,6 +2633,9 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         self.title("Novidades da Versão")
         self.geometry("600x450")
         self.grab_set()
+        
+        self.after(150, self.lift)
+        self.after(150, self.focus_force)
 
         lbl_title = ctk.CTkLabel(self, text="O que há de novo?", font=ctk.CTkFont(size=24, weight="bold"))
         lbl_title.pack(pady=(20, 10))
@@ -2384,7 +2746,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         # Configure window
-        self.title("Inventário de Componentes v1.1.0")
+        self.title("Inventário de Componentes v1.1.1")
         self.geometry("1400x800")
 
         ctk.set_appearance_mode("dark")
@@ -2397,7 +2759,7 @@ class App(ctk.CTk):
 
         self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
-        self.sidebar.grid_rowconfigure(8, weight=1)
+        self.sidebar.grid_rowconfigure(9, weight=1)
 
         self.logo_label = ctk.CTkLabel(
             self.sidebar, text="Inventário", font=ctk.CTkFont(size=24, weight="bold")
@@ -2452,10 +2814,21 @@ class App(ctk.CTk):
             hover_color="#008000"
         )
         self.btn_changelog.grid(row=7, column=0, padx=20, pady=(10, 30), sticky="s")
+        
+        self.btn_packs = ctk.CTkButton(
+            self.sidebar, text="Gerenciar Packs", command=self.show_pack_manager
+        )
+        self.btn_packs.grid(row=8, column=0, padx=20, pady=10)
+        
+        self.credits_btn = ctk.CTkButton(
+            self.sidebar, text="Sobre / Créditos", command=self.open_credits, fg_color="transparent", border_width=1, text_color=("gray10", "#DCE4EE")
+        )
+        self.credits_btn.grid(row=10, column=0, padx=20, pady=(20, 20), sticky="s")
 
         self.drawer_frame = DrawerRegistrationFrame(self)
         self.comp_frame = ComponentRegistrationFrame(self)
         self.search_frame = SearchFrame(self)
+        self.pack_manager_frame = PackManagerFrame(self)
 
         self.active_frame = None
         self.show_drawer_frame()
@@ -2466,7 +2839,7 @@ class App(ctk.CTk):
 
     def check_changelog(self):
         settings_path = "settings.json"
-        current_version = "1.1.0"
+        current_version = "1.1.1"
         last_seen = "1.0.0"
         
         if os.path.exists(settings_path):
@@ -2523,6 +2896,48 @@ class App(ctk.CTk):
         self.search_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
         self.search_frame.perform_search()
         self.active_frame = self.search_frame
+        
+    def show_pack_manager(self):
+        self._hide_all_frames()
+        self.pack_manager_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+        self.active_frame = self.pack_manager_frame
+
+    def open_credits(self):
+        credits_win = ctk.CTkToplevel(self)
+        credits_win.title("Sobre o Sistema")
+        credits_win.geometry("350x350")
+        credits_win.resizable(False, False)
+        
+        credits_win.after(150, credits_win.lift)
+        credits_win.after(150, credits_win.focus_force)
+        
+        try:
+            import os
+            import sys
+            def resource_path(relative_path):
+                try:
+                    base_path = sys._MEIPASS
+                except Exception:
+                    base_path = os.path.abspath(".")
+                return os.path.join(base_path, relative_path)
+                
+            from PIL import Image
+            my_image = ctk.CTkImage(light_image=Image.open(resource_path("perfil.png")),
+                                    dark_image=Image.open(resource_path("perfil.png")),
+                                    size=(100, 100))
+            image_label = ctk.CTkLabel(credits_win, image=my_image, text="")
+            image_label.pack(pady=(20, 10))
+        except Exception:
+            pass
+        
+        title_lbl = ctk.CTkLabel(credits_win, text="Component Inventory App", font=("Segoe UI", 18, "bold"))
+        title_lbl.pack(pady=(10, 10))
+        
+        dev_lbl = ctk.CTkLabel(credits_win, text="Desenvolvedor: Gabriel Silverio de Oliveira", font=("Segoe UI", 14))
+        dev_lbl.pack(pady=5)
+        
+        ver_lbl = ctk.CTkLabel(credits_win, text="Versão: 1.1.1", font=("Segoe UI", 12, "italic"))
+        ver_lbl.pack(pady=10)
 
 
 if __name__ == "__main__":

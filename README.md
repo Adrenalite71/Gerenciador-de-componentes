@@ -1,14 +1,37 @@
-# Inventário de Componentes Eletrônicos
+# Gerenciador de Componentes Eletrônicos 🚀
 
-Uma aplicação desktop intuitiva desenvolvida para organizar, gerenciar e pesquisar componentes eletrônicos (como Resistores PTH/SMD, Capacitores, Transistores, Circuitos Integrados e mais). O sistema permite o mapeamento físico preciso em gavetas e cálculo dinâmico de parâmetros.
+Um sistema desktop moderno, leve e offline para gerenciamento de estoque de componentes eletrônicos. Desenvolvido em Python com interface CustomTkinter e banco de dados SQLite, focado na velocidade e precisão para laboratórios e assistências técnicas.
 
-## Funcionalidades
+## ✨ Principais Funcionalidades
 
-- **Busca Paramétrica Avançada:** Encontre componentes rapidamente filtrando por categoria, localização física, valores exatos ou propriedades específicas.
-- **Sincronização em Rede Local (LAN):** Projetado para ambientes de trabalho reais. O sistema possui arquitetura embutida para operar em modo **Servidor (Host)** ou **Cliente**, permitindo que múltiplos computadores no mesmo local compartilhem e atualizem o mesmo banco de dados em tempo real.
-- **Calculadoras Integradas Bidirecionais:** Ferramentas nativas para decodificação rápida direto na bancada. Inclui calculadora bidirecional inteligente para Resistores PTH (Cores ↔ Valores) e decodificadores automáticos de códigos alfanuméricos para Resistores SMD e Capacitores SMD.
-- **Subdivisões Dinâmicas de Gavetas:** Controle total sobre o seu armazenamento físico. Adicione, edite ou exclua gavetas com quantidades ilimitadas e flexíveis de subdivisões. O preenchimento automático sincroniza dados e cores nativamente ao editar.
-- **Privacidade e Persistência de Dados:** Todo o inventário é salvo de forma segura (SQLite), operando de forma 100% offline no modo local ou centralizado com segurança na sua própria rede.
+*   **Interface Moderna (Dark Mode):** Construída com CustomTkinter para uma experiência limpa e fluida.
+*   **Banco de Dados Offline (SQLite):** Sem necessidade de configurar servidores. Seus dados rodam localmente com máxima velocidade.
+*   **Gestão por Localização:** Controle absoluto de onde cada peça está guardada (Gatetas e Divisões).
+*   **Lojinha Dinâmica de Packs:** O sistema possui uma integração direta com a API do GitHub. Novos "Packs de Conhecimento" (bancos de dados de componentes JSON) criados pela comunidade aparecem automaticamente no aplicativo para download, sem precisar de atualizações de software.
+*   **Categorização Paramétrica:** Campos inteligentes que se adaptam se o componente é um IGBT, um Microcontrolador (DSP), Resistor ou Capacitor.
+
+## 📦 Como Usar
+
+### Usando o Executável (Versão Estável)
+1. Acesse a aba [Releases](https://github.com/Adrenalite71/Gerenciador-de-Componentes/releases).
+2. Baixe a versão `.exe` mais recente.
+3. Execute o programa (não requer instalação).
+
+### Rodando pelo Código Fonte
+Certifique-se de ter o Python instalado e rode os seguintes comandos no terminal:
+
+```bash
+# Clonar o repositório
+git clone [https://github.com/Adrenalite71/Gerenciador-de-Componentes.git](https://github.com/Adrenalite71/Gerenciador-de-Componentes.git)
+
+# Entrar na pasta do projeto
+cd Gerenciador-de-Componentes
+
+# Instalar as dependências
+pip install -r requirements.txt
+
+# Iniciar o aplicativo
+python app.py
 - <img width="1404" height="833" alt="image" src="https://github.com/user-attachments/assets/2254f7af-661a-43fa-936a-f5f6c3b4220e" />
 - <img width="1399" height="830" alt="image" src="https://github.com/user-attachments/assets/86f3d4c7-056b-4e34-9f81-81367776c420" />
 - <img width="558" height="434" alt="image" src="https://github.com/user-attachments/assets/912be76f-58cc-4855-bfdd-deda0e7b1bd6" />
@@ -31,3 +54,8 @@ Uma aplicação desktop intuitiva desenvolvida para organizar, gerenciar e pesqu
 > Para utilizar o aplicativo com segurança, siga os seguintes passos:
 > 1. Na tela azul do *Windows Protect*, clique no texto **"Mais informações"** (More info).
 > 2. Em seguida, clique no botão **"Executar assim mesmo"** (Run anyway).
+
+🧠 Como funcionam os Packs de Conhecimento?
+O aplicativo não vem com milhares de componentes pré-cadastrados para não pesar. Em vez disso, você pode acessar a Lojinha de Packs dentro da engrenagem do app e baixar nichos específicos (ex: "Pack de Inversores de Potência", "Pack Arduino", etc.).
+
+Para aprender a criar o seu próprio Pack em JSON e contribuir com a comunidade, acesse a nossa Wiki.

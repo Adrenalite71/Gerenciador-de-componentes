@@ -32,13 +32,6 @@ pip install -r requirements.txt
 
 # Iniciar o aplicativo
 python app.py
-- <img width="1404" height="833" alt="image" src="https://github.com/user-attachments/assets/2254f7af-661a-43fa-936a-f5f6c3b4220e" />
-- <img width="1399" height="830" alt="image" src="https://github.com/user-attachments/assets/86f3d4c7-056b-4e34-9f81-81367776c420" />
-- <img width="558" height="434" alt="image" src="https://github.com/user-attachments/assets/912be76f-58cc-4855-bfdd-deda0e7b1bd6" />
-- <img width="1403" height="837" alt="image" src="https://github.com/user-attachments/assets/57f42ab6-517a-435b-8439-cc06483a5d4e" />
-
-
-
 
 ## Como Baixar e Usar
 

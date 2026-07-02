@@ -1,7 +1,6 @@
 from classes import SMDDecoder, PTHResistorCalculator, PTHResistorReverseParser, PackManagerFrame
 import sqlite3
 
-# pyrefly: ignore [missing-import]
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 import pandas as pd
@@ -23,12 +22,10 @@ CATEGORIES = [
     "Optoacoplador"
 ]
 
-
 from database_manager import LocalDatabaseManager
 
 class CategoryUIBuilder:
-    """Shared class to build exactly identical UI components for both Registration and Search"""
-
+                                                                                                
     @staticmethod
     def build_fields(parent_frame, category_config, is_search=False):
         category = category_config.get("logic_type", "Outros")
@@ -39,13 +36,11 @@ class CategoryUIBuilder:
             print(f"Error parsing fields JSON in build_fields: {e}")
             custom_fields = []
 
-        # Clear frame
         for widget in parent_frame.winfo_children():
             widget.destroy()
 
         inputs: dict = {}
 
-        # Helper to add simple text entry
         def add_entry(row, col, label_text, key, placeholder=None):
             ctk.CTkLabel(parent_frame, text=label_text).grid(
                 row=row, column=col * 2, padx=(10, 5), pady=10, sticky="e"
@@ -59,11 +54,10 @@ class CategoryUIBuilder:
             entry.grid(row=row, column=col * 2 + 1, padx=(0, 15), pady=10, sticky="w")
             inputs[key] = entry
 
-        # Helper to add dropdown
         def add_combo(row, col, label_text, key, values, command=None):
             label = ctk.CTkLabel(parent_frame, text=label_text)
             label.grid(row=row, column=col * 2, padx=(10, 5), pady=10, sticky="e")
-            # If search, add empty option at top
+                                                
             vals = [""] + values if is_search else values
             var = ctk.StringVar(value=vals[0])
             combo = ctk.CTkOptionMenu(
@@ -74,7 +68,7 @@ class CategoryUIBuilder:
             return combo, label
 
         if category == "Resistor PTH":
-            # For PTH Resistors, we implement the Segmented Button toggle
+                                                                         
             method_var = ctk.StringVar(value="Entrada Direta")
             inputs["r_method"] = method_var
 
@@ -92,7 +86,6 @@ class CategoryUIBuilder:
 
             bands_frame = ctk.CTkFrame(parent_frame, fg_color="transparent")
 
-            # Direct Entry widgets
             ctk.CTkLabel(direct_frame, text="Valor (ex: 2k2):").grid(
                 row=0, column=0, padx=5, pady=10
             )
@@ -114,7 +107,6 @@ class CategoryUIBuilder:
             type_entry.grid(row=0, column=5, padx=5, pady=10)
             inputs["component_type"] = type_entry
 
-            # Bands widgets
             ctk.CTkLabel(bands_frame, text="Bandas:").grid(
                 row=0, column=0, padx=5, pady=10
             )
@@ -278,62 +270,35 @@ class CategoryUIBuilder:
             add_entry(0, 2, "Encapsulamento/Tipo:", "component_type")
 
         elif category == "Transistor":
-
             def on_tipo_change(val):
                 if val in ["BJT", "Darlington"]:
                     pol_label.grid()
                     pol_combo.grid()
-                    pol_combo.configure(state="normal")
-                    pol_vals = ["NPN", "PNP"]
-                    if is_search:
-                        pol_vals.insert(0, "")
-                    pol_combo.configure(values=pol_vals)
-                    if inputs["transistor_pol"].get() not in pol_vals:
-                        inputs["transistor_pol"].set(pol_vals[0])
+                    pol_combo.configure(state="normal", values=["NPN", "PNP"])
+                    if inputs["transistor_pol"].get() not in ["NPN", "PNP"]:
+                        inputs["transistor_pol"].set("NPN")
                 elif val == "MOSFET":
                     pol_label.grid()
                     pol_combo.grid()
-                    pol_combo.configure(state="normal")
-                    pol_vals = ["Canal N", "Canal P"]
-                    if is_search:
-                        pol_vals.insert(0, "")
-                    pol_combo.configure(values=pol_vals)
-                    if inputs["transistor_pol"].get() not in pol_vals:
-                        inputs["transistor_pol"].set(pol_vals[0])
+                    pol_combo.configure(state="normal", values=["Canal N", "Canal P"])
+                    if inputs["transistor_pol"].get() not in ["Canal N", "Canal P"]:
+                        inputs["transistor_pol"].set("Canal N")
                 elif val == "IGBT":
                     pol_label.grid()
                     pol_combo.grid()
-                    pol_combo.configure(values=["-"], state="disabled")
+                    pol_combo.configure(state="disabled", values=["-"])
                     inputs["transistor_pol"].set("-")
-                else:  # empty etc (for search)
-                    pol_label.grid()
-                    pol_combo.grid()
-                    pol_combo.configure(state="normal")
-                    pol_vals = ["NPN", "PNP", "Canal N", "Canal P"]
-                    if is_search:
-                        pol_vals.insert(0, "")
-                    pol_combo.configure(values=pol_vals)
 
             tipo_combo, tipo_label = add_combo(
-                0,
-                0,
-                "Tipo:",
-                "transistor_tipo",
-                ["BJT", "MOSFET", "Darlington", "IGBT"],
-                command=on_tipo_change,
+                0, 0, "Tipo:", "transistor_tipo", ["BJT", "MOSFET", "Darlington", "IGBT"], command=on_tipo_change
             )
             pol_combo, pol_label = add_combo(
-                0,
-                1,
-                "Polaridade:",
-                "transistor_pol",
-                ["NPN", "PNP", "Canal N", "Canal P"],
+                0, 1, "Polaridade:", "transistor_pol", ["NPN", "PNP", "Canal N", "Canal P", "-"]
             )
             add_entry(0, 2, "Encapsulamento:", "component_type")
             add_entry(1, 0, "Tensão Máx (VCEO/VDS):", "voltage")
             add_entry(1, 1, "Corrente Máx (IC/ID):", "tolerance")
 
-            # Trigger initial state
             on_tipo_change(inputs["transistor_tipo"].get())
 
         elif category == "Indutor":
@@ -350,7 +315,7 @@ class CategoryUIBuilder:
             add_entry(0, 0, "Tensão Isolação (ex: 5kV):", "voltage")
             add_entry(0, 1, "Tipo Saída (Fototransistor):", "component_type")
 
-        else:  # Custom Categories
+        else:                     
             if custom_fields:
                 try:
                     for i, field in enumerate(custom_fields):
@@ -378,7 +343,6 @@ class CategoryUIBuilder:
         comp_type = ""
         properties = {}
 
-        # Helper to safely get value from CTkEntry or StringVar with robust fallbacks
         def get_val(key):
             possible_keys = [key]
             if key == "raw_value": possible_keys.extend(["valor", "Valor", "value"])
@@ -408,8 +372,9 @@ class CategoryUIBuilder:
         elif category == "Transistor":
             tipo = get_val("transistor_tipo")
             pol = get_val("transistor_pol")
-            if tipo or pol:
-                raw_val = f"{tipo} ({pol})".strip(" ()")
+            properties["Tipo"] = tipo
+            properties["Polaridade"] = pol
+            raw_val = tipo
             voltage = get_val("voltage")
             tolerance = get_val("tolerance")
             comp_type = get_val("component_type")
@@ -430,7 +395,6 @@ class CategoryUIBuilder:
                 comp_type = get_val("component_type")
 
         return raw_val, voltage, tolerance, comp_type, properties
-
 
 class CategoryEditorDialog(ctk.CTkToplevel):
     def __init__(
@@ -501,14 +465,12 @@ class CategoryEditorDialog(ctk.CTkToplevel):
         fields = [e.get().strip() for e in self.fields_entries if e.get().strip()]
         import json
 
-
         self.result = (name, json.dumps(fields))
         self.destroy()
 
     def get_result(self):
         self.wait_window()
         return self.result
-
 
 class CategoryManagerWindow(ctk.CTkToplevel):
     def __init__(self, master, on_close_callback):
@@ -601,7 +563,7 @@ class CategoryManagerWindow(ctk.CTkToplevel):
         )
 
         if row and row[0] != "Outros":
-            # Standard category: Only allow rename
+                                                  
             dialog = ctk.CTkInputDialog(
                 text=f"Novo nome para '{old_name}' (Campos são fixos para categorias base):",
                 title="Renomear Categoria",
@@ -612,7 +574,7 @@ class CategoryManagerWindow(ctk.CTkToplevel):
             new_name = new_name.strip()
             fields_json = row[1]
         else:
-            # Custom category: allow full edit
+                                              
             import json
 
             initial_fields = []
@@ -636,7 +598,7 @@ class CategoryManagerWindow(ctk.CTkToplevel):
             from tkinter import messagebox
             try:
                 LocalDatabaseManager.update_category(new_name, "Outros", fields_json, old_name)
-                # Since category names are hardcoded in components, we also need to update components
+                                                                                                     
                 LocalDatabaseManager.execute_query("UPDATE components SET category = ? WHERE category = ?", (new_name, old_name))
                 self.selected_category.set(new_name)
                 self.refresh_list()
@@ -647,7 +609,7 @@ class CategoryManagerWindow(ctk.CTkToplevel):
                 else:
                     messagebox.showerror("Erro", str(e))
         elif new_name == old_name:
-            # Maybe just fields changed
+                                       
             LocalDatabaseManager.update_category(old_name, "Outros", fields_json, old_name)
             self.on_close_callback()
             self.on_close_callback()
@@ -682,7 +644,6 @@ class CategoryManagerWindow(ctk.CTkToplevel):
     def on_close(self):
         self.on_close_callback()
         self.destroy()
-
 
 class DrawerRegistrationFrame(ctk.CTkFrame):
     def __init__(self, master):
@@ -719,7 +680,6 @@ class DrawerRegistrationFrame(ctk.CTkFrame):
         )
         self.submit_btn.pack(pady=10, padx=20, anchor="w")
 
-        # Drawers list
         self.list_label = ctk.CTkLabel(
             self, text="Gavetas Existentes", font=ctk.CTkFont(size=18, weight="bold")
         )
@@ -810,16 +770,15 @@ class DrawerRegistrationFrame(ctk.CTkFrame):
 
         try:
             if self.editing_code:
-                # Editing existing drawer
+                                         
                 if self.editing_code != code:
-                    # Rename drawer (door_code). Need to check if new code exists
+                                                                                 
                     if code in LocalDatabaseManager.get_drawer_codes():
                         messagebox.showerror(
                             "Erro", f"Já existe uma gaveta com o código {code}."
                         )
                         return
                     
-                    # Update drawer door code and capacity
                     LocalDatabaseManager.execute_query(
                         "UPDATE subdivisions SET drawer_code = ? WHERE drawer_code = ?",
                         (code, self.editing_code),
@@ -842,7 +801,7 @@ class DrawerRegistrationFrame(ctk.CTkFrame):
                 self.editing_code = None
                 self.submit_btn.configure(text="Salvar Gaveta")
             else:
-                # New drawer
+                            
                 LocalDatabaseManager.add_drawer(code, capacity)
                 messagebox.showinfo(
                     "Sucesso",
@@ -860,7 +819,6 @@ class DrawerRegistrationFrame(ctk.CTkFrame):
             else:
                 messagebox.showerror("Erro", f"Ocorreu um erro inesperado: {str(e)}")
 
-
 class ComponentRegistrationFrame(ctk.CTkFrame):
     def __init__(self, master):
         super().__init__(master, fg_color="transparent")
@@ -875,7 +833,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.container = ctk.CTkFrame(self)
         self.container.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        # Target Drawer (Hierarchical Step 1)
         self.drawer_label = ctk.CTkLabel(self.container, text="Selecione a Gaveta:")
         self.drawer_label.grid(row=0, column=0, padx=20, pady=10, sticky="w")
 
@@ -889,7 +846,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         )
         self.drawer_menu.grid(row=0, column=1, padx=20, pady=10, sticky="w")
 
-        # Target Slot (Hierarchical Step 2)
         self.slot_label = ctk.CTkLabel(self.container, text="Selecione a Divisão:")
         self.slot_label.grid(row=1, column=0, padx=20, pady=10, sticky="w")
 
@@ -901,7 +857,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         )
         self.slot_menu.grid(row=1, column=1, padx=20, pady=10, sticky="w")
 
-        # Component Base Fields
         self.name_label = ctk.CTkLabel(self.container, text="Nome do Componente:")
         self.name_label.grid(row=2, column=0, padx=20, pady=10, sticky="w")
         self.name_entry = ctk.CTkEntry(self.container, width=300)
@@ -914,7 +869,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.qty_entry.insert(0, "1")
         self.qty_entry.grid(row=3, column=1, padx=20, pady=10, sticky="w")
 
-        # Category Selection
         self.cat_label = ctk.CTkLabel(self.container, text="Categoria:")
         self.cat_label.grid(row=4, column=0, padx=20, pady=10, sticky="w")
 
@@ -929,7 +883,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         )
         self.cat_menu.grid(row=4, column=1, padx=20, pady=10, sticky="w")
 
-        # Dynamic Frame Container
         self.dynamic_frame = ctk.CTkFrame(self.container, fg_color=("gray90", "gray13"))
         self.dynamic_frame.grid(
             row=5, column=0, columnspan=2, padx=20, pady=20, sticky="nsew"
@@ -1013,7 +966,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             
         comp_id = self.slot_mapping[slot_label]["comp_id"]
         if not comp_id:
-            # Clear form
+                        
             self.name_entry.delete(0, "end")
             self.qty_entry.delete(0, "end")
             self.qty_entry.insert(0, "1")
@@ -1090,7 +1043,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             
             cat_config = getattr(self, "cat_logic_map", {}).get(comp[2], {"logic_type": "Outros", "fields": "[]"})
             
-            # Helper to set value safely inside dynamic_inputs with robust fallbacks
             import tkinter as tk
             def set_val(key, val, force_combo=False, force_entry=False):
                 possible_keys = [key]
@@ -1135,7 +1087,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 "properties": properties
             }
 
-
             logic_type = cat_config.get("logic_type", "Outros")
             c_raw = comp[3] if comp[3] else ""
             c_volt = comp[4] if comp[4] else ""
@@ -1175,7 +1126,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                         if i < len(band_vars):
                             band_vars[i].set(color)
                     
-                    # Bidirectional Sync: calculate text equivalent and populate text fields
                     calc_str = PTHResistorCalculator.calculate(bands)
                     parts = calc_str.split(" ", 1)
                     val_str = parts[0] if len(parts) > 0 else ""
@@ -1197,7 +1147,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     set_val("component_type", c_type, force_entry=True)
                     set_val("component_type", c_type, force_combo=True)
                     
-                    # Bidirectional Sync: calculate bands and populate comboboxes
                     bands = PTHResistorReverseParser.get_bands(c_raw, c_tol)
                     if bands:
                         set_val("r_band_count", str(len(bands)))
@@ -1214,13 +1163,8 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                                 band_vars[i].set(color)
                     
             elif logic_type == "Transistor":
-                import re
-                m = re.match(r"(.*?)\s*\((.*?)\)", c_raw)
-                tipo = c_raw
-                pol = ""
-                if m:
-                    tipo = m.group(1).strip()
-                    pol = m.group(2).strip()
+                tipo = properties.get("Tipo", c_raw)
+                pol = properties.get("Polaridade", "")
                 
                 set_val("transistor_tipo", tipo)
                 for widget in self.dynamic_frame.winfo_children():
@@ -1302,7 +1246,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 set_val("tolerance", c_tol)
                 set_val("component_type", c_type)
                 
-            # For JSON custom fields
             import ast
             try:
                 fields = ast.literal_eval(cat_config["fields"])
@@ -1551,7 +1494,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         import customtkinter as ctk
 
-        # Row 0
         ctk.CTkLabel(self.dynamic_frame, text="Tipo de Saída:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.opto_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Fototransistor', 'Fotodarlington', 'Fototriac (Zero-Cross)', 'Fototriac (Random)', 'Saída Lógica/Rápida', 'Outro'])
         self.opto_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
@@ -1562,7 +1504,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.opto_canais_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
         self.opto_canais_cb.set('1 (Simples)')
 
-        # Row 1
         ctk.CTkLabel(self.dynamic_frame, text="Isolação (kVrms):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.opto_isolacao_entry = ctk.CTkEntry(self.dynamic_frame)
         self.opto_isolacao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
@@ -1650,7 +1591,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         
         import customtkinter as ctk
-        # Row 0
+               
         ctk.CTkLabel(self.dynamic_frame, text="Tipo:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.sensor_tipo_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Temp/Umidade', 'Distância/Ultrassom', 'Presença/PIR', 'Acelerômetro/Giro', 'Tensão/Corrente', 'Indutivo', 'Capacitivo', 'Fotoelétrico', 'Outro'], command=self.update_sensor_sinal_options)
         self.sensor_tipo_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
@@ -1659,7 +1600,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.sensor_sinal_cb = ctk.CTkComboBox(self.dynamic_frame, values=[], command=self.update_estado_contato_state)
         self.sensor_sinal_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
         
-        # Row 1
         ctk.CTkLabel(self.dynamic_frame, text="Estado do Contato:").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.sensor_estado_cb = ctk.CTkComboBox(self.dynamic_frame, values=['NA', 'NF', 'NA+NF'])
         self.sensor_estado_cb.grid(row=1, column=1, padx=5, pady=5, sticky="w")
@@ -1668,7 +1608,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.sensor_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
         self.sensor_tensao_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         
-        # Row 2
         ctk.CTkLabel(self.dynamic_frame, text="Corrente Máx (mA):").grid(row=2, column=0, padx=5, pady=5, sticky="e")
         self.sensor_corrente_entry = ctk.CTkEntry(self.dynamic_frame)
         self.sensor_corrente_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
@@ -1758,7 +1697,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         import customtkinter as ctk
         
-        # Row 0
         ctk.CTkLabel(self.dynamic_frame, text="Família:").grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.ci_familia_cb = ctk.CTkComboBox(self.dynamic_frame, values=['Analógico', 'Digital', 'Microcontrolador', 'Driver/Potência', 'Comunicação', 'Memória', 'Outro'], command=self.update_ci_funcao)
         self.ci_familia_cb.grid(row=0, column=1, padx=5, pady=5, sticky="w")
@@ -1767,7 +1705,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.ci_funcao_cb = ctk.CTkComboBox(self.dynamic_frame, values=[])
         self.ci_funcao_cb.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-        # Row 1
         ctk.CTkLabel(self.dynamic_frame, text="Tensão de Oper. (V):").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.ci_tensao_entry = ctk.CTkEntry(self.dynamic_frame)
         self.ci_tensao_entry.grid(row=1, column=1, padx=5, pady=5, sticky="w")
@@ -1776,12 +1713,10 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         self.ci_pinos_entry = ctk.CTkEntry(self.dynamic_frame)
         self.ci_pinos_entry.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-        # Row 2
         ctk.CTkLabel(self.dynamic_frame, text="Encapsulamento:").grid(row=2, column=0, padx=5, pady=5, sticky="e")
         self.ci_encaps_entry = ctk.CTkEntry(self.dynamic_frame)
         self.ci_encaps_entry.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-        # Initialize dynamic cascade
         self.ci_familia_cb.set('Analógico')
         self.update_ci_funcao('Analógico')
 
@@ -1831,14 +1766,11 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 gaveta_id = gaveta
                 div_num = int(divisao.split(' ')[1])
                 
-                # Clear from database
                 database.clear_division(gaveta_id, div_num)
                 
-                # Refresh division dropdown list
                 if hasattr(self, 'on_drawer_select'):
                     self.on_drawer_select(gaveta)
                 
-                # Force the UI to clear the fields visually
                 self.name_entry.delete(0, 'end')
                 self.qty_entry.delete(0, 'end')
                 
@@ -1994,7 +1926,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
         if category == "LED":
             from component_knowledge import get_led_specs
             
-            # Find the color property
             color_val = ""
             for k, v in properties.items():
                 if k.lower() in ["cor", "color"]:
@@ -2003,7 +1934,7 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                     
             specs = get_led_specs(color_val)
             if specs:
-                # Inject voltage if empty
+                                         
                 tensao_key = None
                 for k in properties.keys():
                     if k.lower() in ["tensão", "tensao", "voltage"]:
@@ -2015,7 +1946,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 else:
                     properties["Tensão"] = specs["voltage"]
                     
-                # Inject current if empty
                 corrente_key = None
                 for k in properties.keys():
                     if k.lower() in ["corrente", "current"]:
@@ -2048,7 +1978,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
             if hasattr(self.master, 'search_frame'):
                 self.master.search_frame.perform_search()
 
-            # Reset UI
             self.name_entry.delete(0, "end")
             self.qty_entry.delete(0, "end")
             self.qty_entry.insert(0, "1")
@@ -2057,7 +1986,6 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
 
         except Exception as e:
             messagebox.showerror("Erro ao salvar componente", f"Detalhes: {str(e)}")
-
 
 class SearchFrame(ctk.CTkFrame):
     def __init__(self, master):
@@ -2068,7 +1996,6 @@ class SearchFrame(ctk.CTkFrame):
         )
         self.label.pack(pady=10, padx=20, anchor="w")
 
-        # Main Search Area
         self.search_container = ctk.CTkFrame(self)
         self.search_container.pack(pady=10, padx=20, fill="x")
 
@@ -2104,7 +2031,6 @@ class SearchFrame(ctk.CTkFrame):
         )
         self.datasheet_btn.grid(row=0, column=4, padx=20, pady=15, sticky="w")
 
-        # Dynamic Filters Area (Using same UI Builder for EXACT match)
         self.filters_frame = ctk.CTkFrame(self.search_container, fg_color="transparent")
         self.filters_frame.grid(
             row=1, column=0, columnspan=3, padx=20, pady=(0, 10), sticky="ew"
@@ -2113,7 +2039,6 @@ class SearchFrame(ctk.CTkFrame):
         self.dynamic_inputs = {}
         self.update_categories()
 
-        # Grid using ttk.Treeview
         self.tree_frame = ctk.CTkFrame(self)
         self.tree_frame.pack(pady=10, padx=20, fill="both", expand=True)
 
@@ -2293,7 +2218,6 @@ class SearchFrame(ctk.CTkFrame):
             sql += " AND c.category = ?"
             params.append(category)
 
-            # Extract formatted values using the shared builder
             cat_config = getattr(self, "cat_logic_map", {}).get(
                 category, {"logic_type": "Outros", "fields": "[]"}
             )
@@ -2484,7 +2408,6 @@ class SearchFrame(ctk.CTkFrame):
                     f"Ocorreu um erro ao formatar os resultados:\n{str(e)}",
                 )
 
-
 class StockAdjustmentModal(ctk.CTkToplevel):
     def __init__(self, master, comp_id, comp_name, current_qty, callback, tree=None):
         super().__init__(master)
@@ -2511,7 +2434,6 @@ class StockAdjustmentModal(ctk.CTkToplevel):
                 
                 new_delta = current_delta + amount
                 
-                # Prevent withdrawing more than what exists in stock
                 if self.current_qty + new_delta < 0:
                     new_delta = -self.current_qty
                     
@@ -2567,7 +2489,6 @@ class StockAdjustmentModal(ctk.CTkToplevel):
             
             final_qty = self.current_qty + delta
             
-            # Fetch row data directly from Treeview to ensure accurate variables
             if hasattr(self, 'tree') and self.tree and self.tree.selection():
                 selected_item = self.tree.selection()[0]
                 item_values = self.tree.item(selected_item, 'values')
@@ -2785,8 +2706,6 @@ class CalculatorsModal(ctk.CTkToplevel):
                 
         var.trace_add("write", calc)
 
-
-
 import json
 import os
 
@@ -2807,6 +2726,9 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         textbox.pack(expand=True, fill="both", padx=20, pady=(0, 20))
         
         changelog = """
+v1.1.1:
+- Lojinha Dinâmica: O sistema de packs agora consulta diretamente a API do GitHub, atualizando a lista de downloads automaticamente sem necessidade de manutenção.
+
 v1.1.0:
 - Novo sistema de Sincronização em Rede Local (LAN).
 - Agora o sistema pode atuar como Servidor ou Cliente para trabalhar com múltiplos computadores.
@@ -2843,7 +2765,6 @@ v1.0.9:
         
         btn_close = ctk.CTkButton(self, text="Fechar", command=self.destroy)
         btn_close.pack(pady=(0, 20))
-
 
 class NetworkConfigModal(ctk.CTkToplevel):
     def __init__(self, master):
@@ -2908,7 +2829,7 @@ class NetworkConfigModal(ctk.CTkToplevel):
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
-        # Configure window
+                          
         self.title("Inventário de Componentes v1.1.1")
         self.geometry("1400x800")
 
@@ -3101,7 +3022,6 @@ class App(ctk.CTk):
         
         ver_lbl = ctk.CTkLabel(credits_win, text="Versão: 1.1.1", font=("Segoe UI", 12, "italic"))
         ver_lbl.pack(pady=10)
-
 
 if __name__ == "__main__":
     app = App()

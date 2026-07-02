@@ -16,6 +16,9 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         textbox.pack(expand=True, fill="both", padx=20, pady=(0, 20))
         
         changelog = """
+v1.1.1:
+- Lojinha Dinâmica: O sistema de packs agora consulta diretamente a API do GitHub, atualizando a lista de downloads automaticamente sem necessidade de manutenção.
+
 ## v1.0.9
 * Calculadora de Resistores PTH atualizada com modo bidirecional (Valor para Cores).
 
@@ -264,7 +267,7 @@ class SMDDecoder:
 
     @staticmethod
     def parse_search_query(query):
-        """Converts human readable '10k', '100n' into numeric values."""
+                                                                        
         query = query.strip().replace(",", ".")
 
         if "R" in query.upper() and not re.search(r"[a-qs-zA-QS-Z]", query):
@@ -325,7 +328,6 @@ class SMDDecoder:
         if val >= 1e-9:
             return f"{val/1e-9:g}nF"
         return f"{val/1e-12:g}pF"
-
 
 class PTHResistorCalculator:
     DIGITS = {
@@ -407,7 +409,6 @@ class PTHResistorCalculator:
         except KeyError:
             return ""
 
-
 class PTHResistorReverseParser:
     DIGITS_REV = {0: 'Preto', 1: 'Marrom', 2: 'Vermelho', 3: 'Laranja', 4: 'Amarelo', 5: 'Verde', 6: 'Azul', 7: 'Violeta', 8: 'Cinza', 9: 'Branco'}
     MULTIPLIERS_REV = {1: 'Preto', 10: 'Marrom', 100: 'Vermelho', 1000: 'Laranja', 10000: 'Amarelo', 100000: 'Verde', 1000000: 'Azul', 10000000: 'Violeta', 100000000: 'Cinza', 1000000000: 'Branco', 0.1: 'Dourado', 0.01: 'Prateado'}
@@ -484,64 +485,55 @@ class PTHResistorReverseParser:
             
             return [PTHResistorReverseParser.DIGITS_REV[d1], PTHResistorReverseParser.DIGITS_REV[d2], m_color, tol_color]
 
-
 class PackManagerFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.grid_columnconfigure(0, weight=1)
-        
         title = ctk.CTkLabel(self, text="Lojinha de Packs de Conhecimento", font=("Segoe UI", 24, "bold"))
         title.grid(row=0, column=0, pady=20, padx=20, sticky="w")
-        
-        # Future: This list will be fetched via requests.get() from GitHub
-        packs = [
-            {"id": "pack_inversores", "nome": "Inversores de Potência (IGBTs, Gate Drives)", "autor": "Oficial (Gabriel S.)"},
-            {"id": "pack_arduino", "nome": "Automação Arduino Básica", "autor": "Comunidade"}
-        ]
-        
-        for i, p in enumerate(packs):
-            frame = ctk.CTkFrame(self)
-            frame.grid(row=i+1, column=0, padx=20, pady=10, sticky="ew")
-            
-            lbl = ctk.CTkLabel(frame, text=f"{p['nome']}\nAutor: {p['autor']}", font=("Segoe UI", 16), justify="left")
-            lbl.pack(side="left", padx=15, pady=15)
-            
-            btn = ctk.CTkButton(frame, text="Baixar / Mesclar", command=lambda pack_id=p['id']: self.download_pack(pack_id))
-            btn.pack(side="right", padx=15, pady=15)
-            
-    def download_pack(self, pack_id):
+        self.load_catalog()
+
+    def load_catalog(self):
+        import requests
+        import tkinter.messagebox as messagebox
+        try:
+            response = requests.get("https://api.github.com/repos/Adrenalite71/Gerenciador-de-componentes/contents/packs", timeout=10)
+            response.raise_for_status()
+            items = response.json()
+            row_idx = 1
+            for item in items:
+                if isinstance(item, dict) and item.get("name", "").endswith(".json"):
+                    raw_name = item["name"]
+                    display_name = raw_name.replace(".json", "").replace("_", " ").title()
+                    download_url = item.get("download_url")
+                    frame = ctk.CTkFrame(self)
+                    frame.grid(row=row_idx, column=0, padx=20, pady=10, sticky="ew")
+                    lbl = ctk.CTkLabel(frame, text=display_name, font=("Segoe UI", 16), justify="left")
+                    lbl.pack(side="left", padx=15, pady=15)
+                    btn = ctk.CTkButton(frame, text="Baixar / Mesclar", command=lambda url=download_url: self.download_pack(url))
+                    btn.pack(side="right", padx=15, pady=15)
+                    row_idx += 1
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar catálogo: {str(e)}")
+
+    def download_pack(self, download_url):
         import tkinter.messagebox as messagebox
         import component_knowledge
         import requests
-        
-        # Dictionary mapping the pack IDs to their respective GitHub Raw URLs
-        # USER INSTRUCTION: Replace these placeholder URLs with your actual raw.githubusercontent.com links
-        pack_urls = {
-            "pack_inversores": "https://raw.githubusercontent.com/Adrenalite71/Gerenciador-de-componentes/refs/heads/master/packs/pack_inversores.json",
-            "pack_arduino": "https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/main/packs/pack_arduino.json"
-        }
-        
-        url = pack_urls.get(pack_id)
-        if not url:
-            messagebox.showwarning("Aviso", "URL não configurada para este pacote no momento.")
+        if not download_url:
+            messagebox.showwarning("Aviso", "URL inválida.")
             return
-            
         try:
-            # Fetch the data from the web with a 10-second timeout
-            response = requests.get(url, timeout=10)
-            response.raise_for_status() 
-            
-            # Parse the raw text into a Python dictionary
+            response = requests.get(download_url, timeout=10)
+            response.raise_for_status()
             pack_data = response.json()
-            
             if pack_data:
                 component_knowledge.merge_custom_knowledge(pack_data)
-                messagebox.showinfo("Sucesso", f"Pacote '{pack_id}' baixado e integrado com sucesso!\nComponentes mesclados sem duplicatas.")
+                messagebox.showinfo("Sucesso", "Pacote baixado e integrado com sucesso!\nComponentes mesclados sem duplicatas.")
             else:
                 messagebox.showwarning("Aviso", "O pacote foi baixado, mas parece estar vazio.")
-                
         except requests.exceptions.RequestException as e:
-            messagebox.showerror("Erro de Conexão", f"Não foi possível baixar o pacote.\nVerifique sua internet ou se o link do GitHub está correto.\n\nDetalhes: {str(e)}")
+            messagebox.showerror("Erro de Conexão", f"Não foi possível baixar o pacote.\nDetalhes: {str(e)}")
         except ValueError:
-            messagebox.showerror("Erro de Formato", "O arquivo baixado não é um JSON válido. Verifique se você usou o link 'Raw' do GitHub.")
+            messagebox.showerror("Erro de Formato", "O arquivo baixado não é um JSON válido.")
 

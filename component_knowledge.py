@@ -24,7 +24,6 @@ def merge_custom_knowledge(new_pack_data):
     else:
         local_data = {}
     
-    # Smart merge logic: prevents duplicates, updates existing
     for part, specs in new_pack_data.items():
         part_key = part.lower().strip()
         if part_key in local_data:
@@ -36,10 +35,7 @@ def merge_custom_knowledge(new_pack_data):
         json.dump(local_data, f, indent=4, ensure_ascii=False)
 
 def get_led_specs(color: str):
-    """
-    Analyzes a color string to determine typical LED specifications.
-    Returns a dict with 'voltage' and 'current' or None if no match is found.
-    """
+           
     if not color:
         return None
 

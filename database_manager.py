@@ -9,7 +9,6 @@ class LocalDatabaseManager:
         conn = DatabaseManager.get_connection()
         c = conn.cursor()
 
-        # Create base tables
         c.execute("""
             CREATE TABLE IF NOT EXISTS drawers (
                 door_code TEXT PRIMARY KEY CHECK(length(door_code) = 4),
@@ -25,7 +24,6 @@ class LocalDatabaseManager:
             )
         """)
 
-        # MIGRATION: Remove capacity constraint from drawers table if it exists
         c.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='drawers'")
         row = c.fetchone()
         if row and "capacity <=" in row[0]:
@@ -48,7 +46,6 @@ class LocalDatabaseManager:
             )
         """)
 
-        # MIGRATION: Add missing columns if they don't exist
         c.execute("PRAGMA table_info(components)")
         existing_columns = [col[1] for col in c.fetchall()]
 
@@ -141,7 +138,6 @@ class LocalDatabaseManager:
         conn.close()
         return result
 
-    # --- Category Methods ---
     @staticmethod
     def get_categories():
         return LocalDatabaseManager.fetch_all("SELECT name, logic_type, fields_json FROM categories ORDER BY id")
@@ -174,7 +170,6 @@ class LocalDatabaseManager:
         row = LocalDatabaseManager.fetch_one("SELECT count(*) FROM components WHERE category = ?", (name,))
         return row[0] if row else 0
 
-    # --- Drawer Methods ---
     @staticmethod
     def get_drawers():
         return LocalDatabaseManager.fetch_all("SELECT door_code, capacity FROM drawers ORDER BY door_code")
@@ -248,7 +243,6 @@ class LocalDatabaseManager:
             (drawer_code,)
         )
 
-    # --- Component Methods ---
     @staticmethod
     def add_component(name, category, raw_value, norm_val, quantity, sub_id, properties_json, voltage, tolerance, component_type):
         LocalDatabaseManager.execute_query(
@@ -323,7 +317,7 @@ def clear_division(gaveta_id, divisao_numero):
 
     @staticmethod
     def search_parametric(search_text, category, dynamic_filters):
-        # We will use pandas read_sql from DatabaseManager network layer
+                                                                        
         query = "SELECT c.id, c.name, c.category, c.raw_value, c.voltage, c.tolerance, c.component_type, c.normalized_base_value, c.quantity, s.drawer_code, s.subdivision_index, c.properties FROM components c LEFT JOIN subdivisions s ON c.subdivision_id = s.id WHERE 1=1"
         params = []
         
@@ -341,6 +335,5 @@ def clear_division(gaveta_id, divisao_numero):
                     query += f" AND json_extract(c.properties, '$.\"' || ? || '\"') = ?"
                     params.extend([field, val])
 
-        # Execute query using pandas network abstraction
         df = DatabaseManager.read_sql(query, params)
         return df

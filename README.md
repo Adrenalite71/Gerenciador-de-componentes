@@ -32,6 +32,7 @@ pip install -r requirements.txt
 
 # Iniciar o aplicativo
 python app.py
+```
 
 ## Como Baixar e Usar
 
@@ -47,3 +48,8 @@ python app.py
 > Para utilizar o aplicativo com segurança, siga os seguintes passos:
 > 1. Na tela azul do *Windows Protect*, clique no texto **"Mais informações"** (More info).
 > 2. Em seguida, clique no botão **"Executar assim mesmo"** (Run anyway).
+
+🧠 Como funcionam os Packs de Conhecimento?
+O aplicativo não vem com milhares de componentes pré-cadastrados para não pesar. Em vez disso, você pode acessar a Lojinha de Packs dentro da engrenagem do app e baixar nichos específicos (ex: "Pack de Inversores de Potência", "Pack Arduino", etc.).
+
+Para aprender a criar o seu próprio Pack em JSON e contribuir com a comunidade, acesse a nossa Wiki.

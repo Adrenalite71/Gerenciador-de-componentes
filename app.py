@@ -260,7 +260,8 @@ class CategoryUIBuilder:
         elif category == "Capacitor PTH":
             add_entry(0, 0, "Capacitância (ex: 100nF):", "raw_value")
             add_entry(0, 1, "Tensão Máx (ex: 50V):", "voltage")
-            add_entry(0, 2, "Encapsulamento/Tipo:", "component_type")
+            add_entry(0, 2, "Encapsulamento:", "component_type")
+            add_combo(1, 0, "Tipo:", "Tipo", ['Eletrolítico', 'Cerâmico', 'Poliéster', 'Tântalo', 'Mica', 'Filme', 'Outro'])
 
         elif category == "Capacitor SMD":
             add_entry(
@@ -378,6 +379,12 @@ class CategoryUIBuilder:
             voltage = get_val("voltage")
             tolerance = get_val("tolerance")
             comp_type = get_val("component_type")
+
+        elif category == "Capacitor PTH":
+            raw_val = get_val("raw_value")
+            voltage = get_val("voltage")
+            comp_type = get_val("component_type")
+            properties["Tipo"] = get_val("Tipo")
 
         else:
             if custom_fields:
@@ -1240,6 +1247,12 @@ class ComponentRegistrationFrame(ctk.CTkFrame):
                 self.opto_isolacao_entry.insert(0, str(properties.get('Isolação (kVrms)', '')))
                 self.opto_encaps_entry.delete(0, "end")
                 self.opto_encaps_entry.insert(0, str(properties.get('Encapsulamento', '')))
+            elif comp[2] == "Capacitor PTH":
+                set_val("raw_value", c_raw)
+                set_val("voltage", c_volt)
+                set_val("component_type", c_type)
+                if "Tipo" in properties:
+                    set_val("Tipo", properties["Tipo"])
             else:
                 set_val("raw_value", c_raw)
                 set_val("voltage", c_volt)

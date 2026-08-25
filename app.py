@@ -1,3 +1,4 @@
+import api_server
 from classes import SMDDecoder, PTHResistorCalculator, PTHResistorReverseParser, PackManagerFrame
 import sqlite3
 
@@ -3038,4 +3039,5 @@ class App(ctk.CTk):
 
 if __name__ == "__main__":
     app = App()
+    api_server.run_server_in_thread()
     app.mainloop()

@@ -1,3 +1,6 @@
+import sys
+import os
+import winreg
 import api_server
 from classes import SMDDecoder, PTHResistorCalculator, PTHResistorReverseParser, PackManagerFrame
 import sqlite3
@@ -2740,6 +2743,11 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         textbox.pack(expand=True, fill="both", padx=20, pady=(0, 20))
         
         changelog = """
+v1.1.5:
+- Correção definitiva no motor da calculadora de cores (Resistor PTH).
+- Resolução do crash ('tuple' object has no attribute 'split') ao salvar componentes.
+- Preparação de terreno estrutural para a futura API Flask.
+
 v1.1.1:
 - Lojinha Dinâmica: O sistema de packs agora consulta diretamente a API do GitHub, atualizando a lista de downloads automaticamente sem necessidade de manutenção.
 
@@ -2839,12 +2847,21 @@ class NetworkConfigModal(ctk.CTkToplevel):
             
         messagebox.showinfo("Sucesso", f"Modo de operação alterado para: {mode}")
         self.destroy()
+def add_to_startup():
+    if getattr(sys, 'frozen', False):
+        exe_path = sys.executable
+        try:
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Run", 0, winreg.KEY_SET_VALUE)
+            winreg.SetValueEx(key, "GerenciadorComponentes", 0, winreg.REG_SZ, exe_path)
+            winreg.CloseKey(key)
+        except Exception:
+            pass
 
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
                           
-        self.title("Inventário de Componentes v1.1.1")
+        self.title("Inventário de Componentes v1.1.5")
         self.geometry("1400x800")
 
         ctk.set_appearance_mode("dark")
@@ -2937,7 +2954,7 @@ class App(ctk.CTk):
 
     def check_changelog(self):
         settings_path = "settings.json"
-        current_version = "1.1.1"
+        current_version = "1.1.5"
         last_seen = "1.0.0"
         
         if os.path.exists(settings_path):
@@ -3034,10 +3051,11 @@ class App(ctk.CTk):
         dev_lbl = ctk.CTkLabel(credits_win, text="Desenvolvedor: Gabriel Silverio de Oliveira", font=("Segoe UI", 14))
         dev_lbl.pack(pady=5)
         
-        ver_lbl = ctk.CTkLabel(credits_win, text="Versão: 1.1.1", font=("Segoe UI", 12, "italic"))
+        ver_lbl = ctk.CTkLabel(credits_win, text="Versão: 1.1.5", font=("Segoe UI", 12, "italic"))
         ver_lbl.pack(pady=10)
 
 if __name__ == "__main__":
     app = App()
     api_server.run_server_in_thread()
+    add_to_startup()
     app.mainloop()

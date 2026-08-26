@@ -16,6 +16,11 @@ class ReleaseNotesModal(ctk.CTkToplevel):
         textbox.pack(expand=True, fill="both", padx=20, pady=(0, 20))
         
         changelog = """
+v1.1.5:
+- Correção definitiva no motor da calculadora de cores (Resistor PTH).
+- Resolução do crash ('tuple' object has no attribute 'split') ao salvar componentes.
+- Preparação de terreno estrutural para a futura API Flask.
+
 v1.1.1:
 - Lojinha Dinâmica: O sistema de packs agora consulta diretamente a API do GitHub, atualizando a lista de downloads automaticamente sem necessidade de manutenção.
 
@@ -379,35 +384,42 @@ class PTHResistorCalculator:
     @staticmethod
     def calculate(bands):
         if not bands:
-            return ""
+            return "", ""
         try:
             if len(bands) == 4:
-                val = (
-                    PTHResistorCalculator.DIGITS[bands[0]] * 10
-                    + PTHResistorCalculator.DIGITS[bands[1]]
-                ) * PTHResistorCalculator.MULTIPLIERS[bands[2]]
+                val = (PTHResistorCalculator.DIGITS[bands[0]] * 10 + PTHResistorCalculator.DIGITS[bands[1]]) * PTHResistorCalculator.MULTIPLIERS[bands[2]]
+                res = SMDDecoder.format_resistance(val)
                 tol = PTHResistorCalculator.TOLERANCES.get(bands[3], "")
-                return f"{SMDDecoder.format_resistance(val)} {tol}".strip()
             elif len(bands) == 5:
-                val = (
-                    PTHResistorCalculator.DIGITS[bands[0]] * 100
-                    + PTHResistorCalculator.DIGITS[bands[1]] * 10
-                    + PTHResistorCalculator.DIGITS[bands[2]]
-                ) * PTHResistorCalculator.MULTIPLIERS[bands[3]]
+                val = (PTHResistorCalculator.DIGITS[bands[0]] * 100 + PTHResistorCalculator.DIGITS[bands[1]] * 10 + PTHResistorCalculator.DIGITS[bands[2]]) * PTHResistorCalculator.MULTIPLIERS[bands[3]]
+                res = SMDDecoder.format_resistance(val)
                 tol = PTHResistorCalculator.TOLERANCES.get(bands[4], "")
-                return f"{SMDDecoder.format_resistance(val)} {tol}".strip()
             elif len(bands) == 6:
-                val = (
-                    PTHResistorCalculator.DIGITS[bands[0]] * 100
-                    + PTHResistorCalculator.DIGITS[bands[1]] * 10
-                    + PTHResistorCalculator.DIGITS[bands[2]]
-                ) * PTHResistorCalculator.MULTIPLIERS[bands[3]]
-                tol = PTHResistorCalculator.TOLERANCES.get(bands[4], "")
+                val = (PTHResistorCalculator.DIGITS[bands[0]] * 100 + PTHResistorCalculator.DIGITS[bands[1]] * 10 + PTHResistorCalculator.DIGITS[bands[2]]) * PTHResistorCalculator.MULTIPLIERS[bands[3]]
+                res = SMDDecoder.format_resistance(val)
+                tol_val = PTHResistorCalculator.TOLERANCES.get(bands[4], "")
                 tc = PTHResistorCalculator.TEMP_COEFFS.get(bands[5], "")
-                return f"{SMDDecoder.format_resistance(val)} {tol} {tc}".strip()
-            return ""
+                tol = f"{tol_val} {tc}".strip()
+            else:
+                return "", ""
+            return res, tol
         except KeyError:
-            return ""
+            return "", ""
+
+    def calc_pth(self, *args):
+        count = int(self.band_count_var.get())
+        bands = [v.get() for v in self.band_vars[:count]]
+        res, tol = PTHResistorCalculator.calculate(bands)
+        if res or tol:
+            self.result_pth.configure(text=f"{res} {tol}".strip())
+            self.val_entry.delete(0, "end")
+            if res:
+                self.val_entry.insert(0, res)
+            if tol:
+                self.tol_combo.set(tol)
+        else:
+            self.result_pth.configure(text="Inválido")
+            self.val_entry.delete(0, "end")
 
 class PTHResistorReverseParser:
     DIGITS_REV = {0: 'Preto', 1: 'Marrom', 2: 'Vermelho', 3: 'Laranja', 4: 'Amarelo', 5: 'Verde', 6: 'Azul', 7: 'Violeta', 8: 'Cinza', 9: 'Branco'}

@@ -6,6 +6,15 @@ import urllib.error
 import socket
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import pandas as pd
+import sys
+import os
+
+if getattr(sys, 'frozen', False):
+    application_path = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+db_path = os.path.join(application_path, "inventory.db")
 
 class RemoteCursor:
     def __init__(self, host_url):
@@ -64,7 +73,7 @@ class QueryHandler(BaseHTTPRequestHandler):
             
             try:
                 with DatabaseManager.DB_LOCK:
-                    conn = sqlite3.connect("inventory.db")
+                    conn = sqlite3.connect(db_path)
                     c = conn.cursor()
                     if params:
                         c.execute(sql, tuple(params))
@@ -114,7 +123,7 @@ class DatabaseManager:
         if cls.MODE == "Client":
             return RemoteConnection(f"http://{cls.HOST_IP}:{cls.PORT}")
         else:
-            return sqlite3.connect("inventory.db", check_same_thread=False)
+            return sqlite3.connect(db_path, check_same_thread=False)
 
     @classmethod
     def read_sql(cls, sql, params=None):

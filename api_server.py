@@ -11,7 +11,13 @@ def retirar_estoque():
         data = request.get_json()
         texto_digitado = data.get('texto_digitado')
         quantidade_solicitada = int(data.get('quantidade_solicitada'))
-        conn = sqlite3.connect('inventory.db')
+        import sys, os
+        if getattr(sys, 'frozen', False):
+            application_path = os.path.dirname(os.path.abspath(sys.executable))
+        else:
+            application_path = os.path.dirname(os.path.abspath(__file__))
+        db_path = os.path.join(application_path, "inventory.db")
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute("SELECT rowid, gaveta, divisao, quantidade FROM componentes WHERE nome LIKE ? LIMIT 1", ('%' + texto_digitado + '%',))
         row = cursor.fetchone()

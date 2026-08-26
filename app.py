@@ -13,7 +13,12 @@ import re
 import json
 from network import DatabaseManager
 
-DB_FILE = "inventory.db"
+if getattr(sys, 'frozen', False):
+    application_path = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+DB_FILE = os.path.join(application_path, "inventory.db")
 
 CATEGORIES = [
     "Capacitor PTH",

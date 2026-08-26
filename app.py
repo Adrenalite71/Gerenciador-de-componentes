@@ -3055,6 +3055,8 @@ class App(ctk.CTk):
         ver_lbl.pack(pady=10)
 
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()
     app = App()
     api_server.run_server_in_thread()
     add_to_startup()

@@ -366,18 +366,10 @@ class CategoryUIBuilder:
             return ""
 
         if category == "Resistor PTH":
-            method = get_val("r_method")
-            if method == "Entrada Direta":
-                raw_val = get_val("raw_value")
-                tolerance = get_val("tolerance")
-                comp_type = get_val("component_type")
-                properties["modo_insercao"] = "direta"
-            elif method == "Cores (Bandas)":
-                count = int(get_val("r_band_count") or 4)
-                bands = [var.get() for var in inputs.get("r_bands", [])[:count]]
-                raw_val = "CORES: " + "-".join([b for b in bands if b])
-                comp_type = get_val("component_type")
-                properties["modo_insercao"] = "cores"
+            raw_val = get_val("raw_value")
+            tolerance = get_val("tolerance")
+            comp_type = get_val("component_type")
+            properties["modo_insercao"] = "unificada"
 
         elif category == "Transistor":
             tipo = get_val("transistor_tipo")
@@ -2420,7 +2412,7 @@ class SearchFrame(ctk.CTkFrame):
                                     val = "-"
                                 row_values.append(str(val))
 
-                        self.tree.insert("", "end", values=tuple(row_values), tags=(str(row["id"]),))
+                        self.tree.insert("", "end", iid=str(row["id"]), values=tuple(row_values), tags=(str(row["id"]),))
                     except Exception as tree_err:
                         continue
             except Exception as e:

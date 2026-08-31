@@ -1,0 +1,368 @@
+{
+"uc3842an": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "12V a 28V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"uc3843bn": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "8.4V a 30V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"uc3844bd1r2g": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "12V a 30V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"uc3845b": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "7.6V a 30V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"tl431aclp": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Analógico",
+"Função": "Referência de Tensão",
+"Tensão de Oper. (V)": "2.5V a 36V",
+"Número de Pinos": "3",
+"Encapsulamento": "TO-92"
+},
+"viper22a-e": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "9V a 38V",
+"Número de Pinos": "8",
+"Encapsulamento": "DIP-8"
+},
+"tny266pn": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "5.8V a 6.5V",
+"Número de Pinos": "7",
+"Encapsulamento": "DIP-8C"
+},
+"top247yn": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "9V a 15V",
+"Número de Pinos": "6",
+"Encapsulamento": "TO-220-7C"
+},
+"ncp1200p60": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "16V",
+"Número de Pinos": "8",
+"Encapsulamento": "PDIP-8"
+},
+"l6562d": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "10.3V a 22V",
+"Número de Pinos": "8",
+"Encapsulamento": "SOIC-8"
+},
+"ob2263ap": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "12V a 28V",
+"Número de Pinos": "8",
+"Encapsulamento": "DIP-8"
+},
+"tea1751lt": {
+"Categoria": "CI (Circuito Integrado)",
+"Família": "Outro",
+"Função": "Específico/Outro",
+"Tensão de Oper. (V)": "15V a 38V",
+"Número de Pinos": "16",
+"Encapsulamento": "SO16"
+},
+"fqp10n60c": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "600V",
+"Corrente Máx (IC/ID)": "9.5A"
+},
+"irf3205pbf": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "55V",
+"Corrente Máx (IC/ID)": "110A"
+},
+"mje13007g": {
+"Categoria": "Transistor",
+"Tipo": "BJT",
+"Polaridade": "NPN",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "400V",
+"Corrente Máx (IC/ID)": "8A"
+},
+"stw45nm60": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "600V",
+"Corrente Máx (IC/ID)": "45A"
+},
+"spa11n60c3": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220FP",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "11A"
+},
+"stp9nk90z": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-220",
+"Tensão Máx (VCEO/VDS)": "900V",
+"Corrente Máx (IC/ID)": "8A"
+},
+"ipw60r099cp": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-247",
+"Tensão Máx (VCEO/VDS)": "650V",
+"Corrente Máx (IC/ID)": "31A"
+},
+"2sc2625": {
+"Categoria": "Transistor",
+"Tipo": "BJT",
+"Polaridade": "NPN",
+"Encapsulamento": "TO-3P",
+"Tensão Máx (VCEO/VDS)": "400V",
+"Corrente Máx (IC/ID)": "10A"
+},
+"ktc3265": {
+"Categoria": "Transistor",
+"Tipo": "BJT",
+"Polaridade": "NPN",
+"Encapsulamento": "SOT-23",
+"Tensão Máx (VCEO/VDS)": "30V",
+"Corrente Máx (IC/ID)": "0.8A"
+},
+"fqa19n10": {
+"Categoria": "Transistor",
+"Tipo": "MOSFET",
+"Polaridade": "Canal N",
+"Encapsulamento": "TO-3P",
+"Tensão Máx (VCEO/VDS)": "100V",
+"Corrente Máx (IC/ID)": "15.6A"
+},
+"mbr20100ct": {
+"Categoria": "Diodo",
+"Tipo": "Schottky",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "100V",
+"Corrente Máx (A)": "20A"
+},
+"mur160": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-41 (PTH)",
+"Tensão Máx (V)": "600V",
+"Corrente Máx (A)": "1A"
+},
+"ss14": {
+"Categoria": "Diodo",
+"Tipo": "Schottky",
+"Encapsulamento": "SMA (SMD)",
+"Tensão Máx (V)": "40V",
+"Corrente Máx (A)": "1A"
+},
+"1n4148w": {
+"Categoria": "Diodo",
+"Tipo": "Sinal",
+"Encapsulamento": "SOD-123 (SMD)",
+"Tensão Máx (V)": "100V",
+"Corrente Máx (A)": "0.15A"
+},
+"uf4007": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-41 (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "1A"
+},
+"her308": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-201 (PTH)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "3A"
+},
+"byv29-500": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "500V",
+"Corrente Máx (A)": "9A"
+},
+"stth8r06d": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "600V",
+"Corrente Máx (A)": "8A"
+},
+"mbr3045pt": {
+"Categoria": "Diodo",
+"Tipo": "Schottky",
+"Encapsulamento": "Outro",
+"Tensão Máx (V)": "45V",
+"Corrente Máx (A)": "30A"
+},
+"sf56": {
+"Categoria": "Diodo",
+"Tipo": "Retificador",
+"Encapsulamento": "DO-201 (PTH)",
+"Tensão Máx (V)": "400V",
+"Corrente Máx (A)": "5A"
+},
+"pc817": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototransistor",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "5.0 kV",
+"Encapsulamento": "DIP-4"
+},
+"el817c": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototransistor",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "5.0 kV",
+"Encapsulamento": "DIP-4"
+},
+"4n35": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototransistor",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "3.55 kV",
+"Encapsulamento": "DIP-6"
+},
+"moc3021": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Fototriac (Random)",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "5.3 kV",
+"Encapsulamento": "DIP-6"
+},
+"6n137": {
+"Categoria": "Optoacoplador",
+"Tipo de Saída": "Saída Lógica/Rápida",
+"Canais": "1 (Simples)",
+"Isolação (kVrms)": "2.5 kV",
+"Encapsulamento": "DIP-8"
+},
+"kbp206": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "KBP (PTH)",
+"Tensão Máx (V)": "600V",
+"Corrente Máx (A)": "2A"
+},
+"gbu808": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "GBJ (PTH)",
+"Tensão Máx (V)": "800V",
+"Corrente Máx (A)": "8A"
+},
+"kbpc3510": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "KBPC (Metal Quadrado)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "35A"
+},
+"abs10": {
+"Categoria": "Ponte Retificadora",
+"Fases": "Monofásica",
+"Encapsulamento": "ABS (SMD)",
+"Tensão Máx (V)": "1000V",
+"Corrente Máx (A)": "1A"
+},
+"cl21b104kbcnnnc": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "104",
+"Tensão Máx (ex: 50V)": "50V",
+"Encapsulamento/Tipo": "0805 / Cerâmico Multicamada (MLCC)"
+},
+"cl31b106kohvpne": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "10µF",
+"Tensão Máx (ex: 50V)": "16V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"c0805c105k5ractu": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "1µF",
+"Tensão Máx (ex: 50V)": "50V",
+"Encapsulamento/Tipo": "0805 / Cerâmico Multicamada (MLCC)"
+},
+"c1206c104k5ractu": {
+"Categoria": "Capacitor SMD",
+"Código SMD": "104",
+"Tensão Máx (ex: 50V)": "50V",
+"Encapsulamento/Tipo": "1206 / Cerâmico Multicamada (MLCC)"
+},
+"10d471k": {
+"Categoria": "Varistor",
+"Part Number / Código": "10D471K",
+"Tensão do Varistor": "470V",
+"Tensão RMS Máx": "300V",
+"Diâmetro / Encaps.": "10mm"
+},
+"14d471k": {
+"Categoria": "Varistor",
+"Part Number / Código": "14D471K",
+"Tensão do Varistor": "470V",
+"Tensão RMS Máx": "300V",
+"Diâmetro / Encaps.": "14mm"
+},
+"20d471k": {
+"Categoria": "Varistor",
+"Part Number / Código": "20D471K",
+"Tensão do Varistor": "470V",
+"Tensão RMS Máx": "300V",
+"Diâmetro / Encaps.": "20mm"
+},
+"2300ht-100-h-rc": {
+"Categoria": "Indutor",
+"Indutância (ex: 10µH)": "100µH",
+"Corrente Máx (ex: 2A)": "15.3A",
+"Encapsulamento": "PTH Toroidal"
+},
+"et24-103": {
+"Categoria": "Indutor",
+"Indutância (ex: 10µH)": "10mH",
+"Corrente Máx (ex: 2A)": "1A",
+"Encapsulamento": "PTH Toroidal"
+}
+}

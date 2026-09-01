@@ -1,0 +1,378 @@
+{
+  "esp-wroom-32": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Comunicação (RF/WiFi)",
+    "CI Principal": "ESP32-D0WDQ6",
+    "Tensão de Alim. (V)": "3.0V a 3.6V",
+    "Função/Aplicação": "Módulo SoC WiFi e Bluetooth para IoT e automação"
+  },
+  "esp-12e": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Comunicação (RF/WiFi)",
+    "CI Principal": "ESP8266EX",
+    "Tensão de Alim. (V)": "3.0V a 3.6V",
+    "Função/Aplicação": "Módulo SoC WiFi para conexão IoT e projetos embarcados"
+  },
+  "l298n": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Driver de Motor",
+    "CI Principal": "L298N",
+    "Tensão de Alim. (V)": "5V a 35V",
+    "Função/Aplicação": "Módulo Ponte H para controle de motores DC e de passo"
+  },
+  "lm2596": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Conversor DC-DC",
+    "CI Principal": "LM2596S-ADJ",
+    "Tensão de Alim. (V)": "4V a 40V",
+    "Função/Aplicação": "Módulo Conversor Buck DC-DC Rebaixador de Tensão Ajustável"
+  },
+  "nrf24l01": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Comunicação (RF/WiFi)",
+    "CI Principal": "nRF24L01+",
+    "Tensão de Alim. (V)": "1.9V a 3.6V",
+    "Função/Aplicação": "Transceptor RF de 2.4GHz para comunicação sem fio"
+  },
+  "ssd1306": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Display",
+    "CI Principal": "SSD1306",
+    "Tensão de Alim. (V)": "3.3V a 5V",
+    "Função/Aplicação": "Display OLED 0.96 polegadas I2C para exibição gráfica"
+  },
+  "xl4015": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Conversor DC-DC",
+    "CI Principal": "XL4015",
+    "Tensão de Alim. (V)": "8V a 36V",
+    "Função/Aplicação": "Módulo Conversor Buck DC-DC de alta corrente 5A"
+  },
+  "mt3608": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Conversor DC-DC",
+    "CI Principal": "MT3608",
+    "Tensão de Alim. (V)": "2V a 24V",
+    "Função/Aplicação": "Módulo Conversor Boost DC-DC Elevador de Tensão"
+  },
+  "tb6612fng": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Driver de Motor",
+    "CI Principal": "TB6612FNG",
+    "Tensão de Alim. (V)": "2.5V a 13.5V",
+    "Função/Aplicação": "Módulo Driver Duplo de Ponte H MOSFET para motores DC"
+  },
+  "a4988": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Driver de Motor",
+    "CI Principal": "A4988",
+    "Tensão de Alim. (V)": "8V a 35V",
+    "Função/Aplicação": "Módulo Driver de Motor de Passo com suporte a micro-passos"
+  },
+  "drv8825": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Driver de Motor",
+    "CI Principal": "DRV8825",
+    "Tensão de Alim. (V)": "8.2V a 45V",
+    "Função/Aplicação": "Módulo Driver de Motor de Passo de alta resolução"
+  },
+  "sim800l": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Comunicação (RF/WiFi)",
+    "CI Principal": "SIM800L",
+    "Tensão de Alim. (V)": "3.4V a 4.4V",
+    "Função/Aplicação": "Módulo Celular GSM/GPRS para chamadas, SMS e dados"
+  },
+  "mfrc522": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Comunicação (RF/WiFi)",
+    "CI Principal": "MFRC522",
+    "Tensão de Alim. (V)": "3.3V",
+    "Função/Aplicação": "Módulo Leitor RFID/NFC 13.56MHz com interface SPI"
+  },
+  "lcd1602": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Display",
+    "CI Principal": "HD44780",
+    "Tensão de Alim. (V)": "5V",
+    "Função/Aplicação": "Display LCD alfanumérico 16x2 para exibição de texto"
+  },
+  "dfplayer-mini": {
+    "Categoria": "Módulo",
+    "Tipo de Módulo": "Áudio",
+    "CI Principal": "YX5200",
+    "Tensão de Alim. (V)": "3.2V a 5.0V",
+    "Função/Aplicação": "Módulo reprodutor MP3 com leitor de cartão MicroSD"
+  },
+  "dht22": {
+    "Categoria": "Sensor",
+    "Tipo": "Temp/Umidade",
+    "Sinal de Interface": "Digital (Pulse)",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "3.3V a 6V",
+    "Corrente Máx (mA)": "2.5mA"
+  },
+  "dht11": {
+    "Categoria": "Sensor",
+    "Tipo": "Temp/Umidade",
+    "Sinal de Interface": "Digital (Pulse)",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "3V a 5.5V",
+    "Corrente Máx (mA)": "2.5mA"
+  },
+  "hc-sr04": {
+    "Categoria": "Sensor",
+    "Tipo": "Distância/Ultrassom",
+    "Sinal de Interface": "Digital (Pulse)",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "5V",
+    "Corrente Máx (mA)": "15mA"
+  },
+  "hc-sr501": {
+    "Categoria": "Sensor",
+    "Tipo": "Presença/PIR",
+    "Sinal de Interface": "Digital (High/Low)",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "4.5V a 20V",
+    "Corrente Máx (mA)": "0.05mA"
+  },
+  "ds18b20": {
+    "Categoria": "Sensor",
+    "Tipo": "Temp/Umidade",
+    "Sinal de Interface": "One-Wire",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "3.0V a 5.5V",
+    "Corrente Máx (mA)": "1.5mA"
+  },
+  "mpu6050": {
+    "Categoria": "Sensor",
+    "Tipo": "Acelerômetro/Giro",
+    "Sinal de Interface": "I2C",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "3.3V a 5V",
+    "Corrente Máx (mA)": "3.9mA"
+  },
+  "acs712": {
+    "Categoria": "Sensor",
+    "Tipo": "Tensão/Corrente",
+    "Sinal de Interface": "Analógico",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "5V",
+    "Corrente Máx (mA)": "13mA"
+  },
+  "bmp280": {
+    "Categoria": "Sensor",
+    "Tipo": "Temp/Umidade",
+    "Sinal de Interface": "I2C",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "1.71V a 3.6V",
+    "Corrente Máx (mA)": "2.7mA"
+  },
+  "tcrt5000": {
+    "Categoria": "Sensor",
+    "Tipo": "Fotoelétrico",
+    "Sinal de Interface": "Analógico",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "5V",
+    "Corrente Máx (mA)": "60mA"
+  },
+  "lj12a3-4-z-bx": {
+    "Categoria": "Sensor",
+    "Tipo": "Indutivo",
+    "Sinal de Interface": "NPN",
+    "Estado do Contato": "NA",
+    "Tensão de Operação (V)": "6V a 36V",
+    "Corrente Máx (mA)": "300mA"
+  },
+  "lj12a3-4-z-by": {
+    "Categoria": "Sensor",
+    "Tipo": "Indutivo",
+    "Sinal de Interface": "PNP",
+    "Estado do Contato": "NA",
+    "Tensão de Operação (V)": "6V a 36V",
+    "Corrente Máx (mA)": "300mA"
+  },
+  "rcwl-0516": {
+    "Categoria": "Sensor",
+    "Tipo": "Presença/PIR",
+    "Sinal de Interface": "Digital (High/Low)",
+    "Estado do Contato": "-",
+    "Tensão de Operação (V)": "4V a 28V",
+    "Corrente Máx (mA)": "3mA"
+  },
+  "txs0108e": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Comunicação",
+    "Função": "Outro",
+    "Tensão de Oper. (V)": "1.2V a 5.5V",
+    "Número de Pinos": "20",
+    "Encapsulamento": "TSSOP-20"
+  },
+  "pcf8574": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Comunicação",
+    "Função": "Expansor de I/O",
+    "Tensão de Oper. (V)": "2.5V a 6V",
+    "Número de Pinos": "16",
+    "Encapsulamento": "DIP-16"
+  },
+  "uln2003a": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Driver/Potência",
+    "Função": "Outro",
+    "Tensão de Oper. (V)": "5V a 50V",
+    "Número de Pinos": "16",
+    "Encapsulamento": "DIP-16"
+  },
+  "l293d": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Driver/Potência",
+    "Função": "Ponte H / Motor",
+    "Tensão de Oper. (V)": "4.5V a 36V",
+    "Número de Pinos": "16",
+    "Encapsulamento": "DIP-16"
+  },
+  "74hc595": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Digital",
+    "Função": "Shift Register",
+    "Tensão de Oper. (V)": "2V a 6V",
+    "Número de Pinos": "16",
+    "Encapsulamento": "DIP-16"
+  },
+  "max485": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Comunicação",
+    "Função": "Transceptor (RS-485/CAN/etc)",
+    "Tensão de Oper. (V)": "4.75V a 5.25V",
+    "Número de Pinos": "8",
+    "Encapsulamento": "DIP-8"
+  },
+  "ne555": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Analógico",
+    "Função": "Timer",
+    "Tensão de Oper. (V)": "4.5V a 15V",
+    "Número de Pinos": "8",
+    "Encapsulamento": "DIP-8"
+  },
+  "atmega328p": {
+    "Categoria": "CI (Circuito Integrado)",
+    "Família": "Microcontrolador",
+    "Função": "MCU 8-bit",
+    "Tensão de Oper. (V)": "1.8V a 5.5V",
+    "Número de Pinos": "28",
+    "Encapsulamento": "DIP-28"
+  },
+  "irlz44n": {
+    "Categoria": "Transistor",
+    "Tipo": "MOSFET",
+    "Polaridade": "Canal N",
+    "Encapsulamento": "TO-220",
+    "Tensão Máx (VCEO/VDS)": "55V",
+    "Corrente Máx (IC/ID)": "47A"
+  },
+  "2n2222": {
+    "Categoria": "Transistor",
+    "Tipo": "BJT",
+    "Polaridade": "NPN",
+    "Encapsulamento": "TO-92",
+    "Tensão Máx (VCEO/VDS)": "40V",
+    "Corrente Máx (IC/ID)": "800mA"
+  },
+  "tip120": {
+    "Categoria": "Transistor",
+    "Tipo": "Darlington",
+    "Polaridade": "NPN",
+    "Encapsulamento": "TO-220",
+    "Tensão Máx (VCEO/VDS)": "60V",
+    "Corrente Máx (IC/ID)": "5A"
+  },
+  "irf540n": {
+    "Categoria": "Transistor",
+    "Tipo": "MOSFET",
+    "Polaridade": "Canal N",
+    "Encapsulamento": "TO-220",
+    "Tensão Máx (VCEO/VDS)": "100V",
+    "Corrente Máx (IC/ID)": "33A"
+  },
+  "bc547": {
+    "Categoria": "Transistor",
+    "Tipo": "BJT",
+    "Polaridade": "NPN",
+    "Encapsulamento": "TO-92",
+    "Tensão Máx (VCEO/VDS)": "45V",
+    "Corrente Máx (IC/ID)": "100mA"
+  },
+  "bc557": {
+    "Categoria": "Transistor",
+    "Tipo": "BJT",
+    "Polaridade": "PNP",
+    "Encapsulamento": "TO-92",
+    "Tensão Máx (VCEO/VDS)": "45V",
+    "Corrente Máx (IC/ID)": "100mA"
+  },
+  "srd-05vdc-sl-c": {
+    "Categoria": "Relé",
+    "Tipo": "Eletromecânico",
+    "Tipo de Contato": "SPDT (1 Reversível)",
+    "Tensão da Bobina (V)": "5V",
+    "Corrente Máx dos Contatos (A)": "10A"
+  },
+  "srd-12vdc-sl-c": {
+    "Categoria": "Relé",
+    "Tipo": "Eletromecânico",
+    "Tipo de Contato": "SPDT (1 Reversível)",
+    "Tensão da Bobina (V)": "12V",
+    "Corrente Máx dos Contatos (A)": "10A"
+  },
+  "g5q-14-dc5": {
+    "Categoria": "Relé",
+    "Tipo": "Eletromecânico",
+    "Tipo de Contato": "SPDT (1 Reversível)",
+    "Tensão da Bobina (V)": "5V",
+    "Corrente Máx dos Contatos (A)": "10A"
+  },
+  "ssr-25da": {
+    "Categoria": "Relé",
+    "Tipo": "Estado Sólido (SSR)",
+    "Tipo de Contato": "SPST-NO (1 NA)",
+    "Tensão da Bobina (V)": "3V a 32V",
+    "Corrente Máx dos Contatos (A)": "25A"
+  },
+  "pc817": {
+    "Categoria": "Optoacoplador",
+    "Tipo de Saída": "Fototransistor",
+    "Canais": "1 (Simples)",
+    "Isolação (kVrms)": "5.0 kV",
+    "Encapsulamento": "DIP-4"
+  },
+  "4n25": {
+    "Categoria": "Optoacoplador",
+    "Tipo de Saída": "Fototransistor",
+    "Canais": "1 (Simples)",
+    "Isolação (kVrms)": "2.5 kV",
+    "Encapsulamento": "DIP-6"
+  },
+  "moc3021": {
+    "Categoria": "Optoacoplador",
+    "Tipo de Saída": "Fototriac (Random)",
+    "Canais": "1 (Simples)",
+    "Isolação (kVrms)": "7.5 kV",
+    "Encapsulamento": "DIP-6"
+  },
+  "1n4007": {
+    "Categoria": "Diodo",
+    "Tipo": "Retificador",
+    "Encapsulamento": "DO-41 (PTH)",
+    "Tensão Máx (V)": "1000V",
+    "Corrente Máx (A)": "1A"
+  },
+  "1n4148": {
+    "Categoria": "Diodo",
+    "Tipo": "Sinal",
+    "Encapsulamento": "DO-35 (PTH)",
+    "Tensão Máx (V)": "100V",
+    "Corrente Máx (A)": "0.2A"
+  }
+}
